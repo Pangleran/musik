@@ -1,87 +1,128 @@
 <!doctype html>
 <html lang="id">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Music Player</title>
-
 <style>
-body{
-  margin:0;
-  font-family:system-ui,Segoe UI,Roboto,Arial;
-  background:#0b1020;
-  color:#e8eefc;
-}
-.wrap{
-  min-height:100vh;
-  display:grid;
-  place-items:center;
-  padding:18px;
-}
-.card{
-  width:min(720px,94vw);
-  background:rgba(255,255,255,.06);
-  border:1px solid rgba(255,255,255,.12);
-  border-radius:16px;
-  padding:16px;
-}
-h1{margin:0 0 12px}
-input{
-  width:100%;
-  padding:12px;
-  border-radius:12px;
-  border:1px solid rgba(255,255,255,.12);
-  background:#0003;
-  color:white;
-}
-button{
-  margin-top:10px;
-  padding:12px;
-  width:100%;
-  border-radius:12px;
-  border:1px solid rgba(255,255,255,.12);
-  background:rgba(110,168,254,.22);
-  color:white;
-  font-weight:700;
-}
-iframe{
-  width:100%;
-  aspect-ratio:16/9;
-  border:0;
-  border-radius:14px;
-  margin-top:14px;
-}
+  *{box-sizing:border-box}
+  body{
+    margin:0;font-family:system-ui,Segoe UI,Roboto,Arial;
+    background:radial-gradient(900px 500px at 20% 0%, rgba(110,168,254,.22), transparent 60%),
+               radial-gradient(900px 500px at 80% 20%, rgba(0,0,0,.35), transparent 60%),
+               #0b1020;
+    color:#e8eefc;
+  }
+  .wrap{min-height:100vh;display:grid;place-items:center;padding:18px}
+  .card{
+    width:min(720px,94vw);
+    background:rgba(255,255,255,.06);
+    border:1px solid rgba(255,255,255,.12);
+    border-radius:18px;
+    padding:16px;
+    box-shadow:0 18px 50px rgba(0,0,0,.35);
+  }
+  h1{margin:0 0 12px;font-size:22px}
+  .row{display:flex;gap:10px;flex-wrap:wrap}
+  input{
+    flex:1;min-width:220px;
+    padding:12px 14px;border-radius:12px;border:1px solid rgba(255,255,255,.12);
+    background:rgba(0,0,0,.2);color:#fff;outline:none;
+  }
+  button,a.btn{
+    padding:12px 14px;border-radius:12px;border:1px solid rgba(255,255,255,.12);
+    background:rgba(110,168,254,.22);color:#fff;cursor:pointer;font-weight:800;
+    text-decoration:none;display:inline-block;text-align:center;
+  }
+  button:hover,a.btn:hover{filter:brightness(1.08)}
+  .ghost{background:rgba(255,255,255,.08)}
+  .status{
+    margin-top:12px;padding:10px 12px;border-radius:12px;
+    border:1px solid rgba(255,255,255,.10);background:rgba(0,0,0,.20);font-size:14px
+  }
+  .status.ok{border-color:rgba(90,255,160,.25)}
+  .status.warn{border-color:rgba(255,210,90,.25)}
+  .status.err{border-color:rgba(255,90,90,.25)}
+  iframe{
+    width:100%;
+    aspect-ratio:16/9;
+    border:0;
+    border-radius:14px;
+    margin-top:14px;
+    background:#000;
+  }
+  .hint{opacity:.75;font-size:12px;margin-top:8px;line-height:1.35}
 </style>
 </head>
 <body>
-
 <div class="wrap">
   <div class="card">
     <h1>🎧 Music Player</h1>
-    <input id="q" placeholder="Masukkan judul lagu / artis">
-    <button onclick="play()">▶ Play</button>
+
+    <div class="row">
+      <input id="q" placeholder="Paste link YouTube atau videoId (11 karakter)" />
+      <button id="btnPlay">▶ Play</button>
+      <a id="btnOpen" class="btn ghost" href="#" target="_blank" rel="noreferrer">Buka</a>
+    </div>
+
+    <div id="status" class="status">Masukkan link YouTube / videoId, lalu klik Play.</div>
+
     <iframe id="player" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+
+    <div class="hint">
+      Catatan: GitHub Pages tidak bisa “search YouTube” langsung karena masalah CORS.
+      Tapi paste link/videoId ini 100% stabil.
+      Contoh videoId: <b>dQw4w9WgXcQ</b> (11 karakter).
+    </div>
   </div>
 </div>
 
 <script>
-function play(){
-  const q = document.getElementById("q").value.trim();
-  if(!q) return alert("Masukkan judul lagu");
+const statusEl = document.getElementById("status");
+const q = document.getElementById("q");
+const player = document.getElementById("player");
+const btnOpen = document.getElementById("btnOpen");
 
-  const url = "https://www.youtube.com/results?search_query=" 
-              + encodeURIComponent(q);
-
-  fetch("https://cors.isomorphic-git.org/" + url)
-    .then(r=>r.text())
-    .then(html=>{
-      const m = html.match(/"videoId":"([a-zA-Z0-9_-]{11})"/);
-      if(!m) return alert("Video tidak ditemukan");
-      document.getElementById("player").src =
-        "https://www.youtube.com/embed/" + m[1] + "?autoplay=1";
-    });
+function setStatus(msg, cls="") {
+  statusEl.className = "status " + cls;
+  statusEl.textContent = msg;
 }
-</script>
 
+function extractVideoId(input){
+  input = (input || "").trim();
+
+  // kalau user sudah videoId (11 chars)
+  if (/^[a-zA-Z0-9_-]{11}$/.test(input)) return input;
+
+  // youtu.be/VIDEOID
+  let m = input.match(/youtu\.be\/([a-zA-Z0-9_-]{11})/);
+  if (m) return m[1];
+
+  // youtube.com/watch?v=VIDEOID
+  m = input.match(/[?&]v=([a-zA-Z0-9_-]{11})/);
+  if (m) return m[1];
+
+  // youtube.com/shorts/VIDEOID
+  m = input.match(/youtube\.com\/shorts\/([a-zA-Z0-9_-]{11})/);
+  if (m) return m[1];
+
+  // embed/VIDEOID
+  m = input.match(/embed\/([a-zA-Z0-9_-]{11})/);
+  if (m) return m[1];
+
+  return null;
+}
+
+document.getElementById("btnPlay").addEventListener("click", () => {
+  const id = extractVideoId(q.value);
+  if (!id) return setStatus("Format salah. Paste link YouTube atau videoId 11 karakter.", "err");
+
+  const watch = "https://www.youtube.com/watch?v=" + id;
+  btnOpen.href = watch;
+
+  player.src = "https://www.youtube.com/embed/" + id + "?autoplay=1&rel=0";
+  setStatus("Memutar via YouTube player.", "ok");
+});
+</script>
 </body>
 </html>
