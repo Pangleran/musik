@@ -1,8 +1,8 @@
 <!doctype html>
 <html lang="id">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Music Player</title>
 
 <style>
@@ -10,7 +10,9 @@
 body{
   margin:0;
   font-family:system-ui,Segoe UI,Roboto,Arial;
-  background:#0b1020;
+  background:radial-gradient(900px 500px at 20% 0%, rgba(110,168,254,.22), transparent 60%),
+             radial-gradient(900px 500px at 80% 20%, rgba(0,0,0,.35), transparent 60%),
+             #0b1020;
   color:#e8eefc;
 }
 .wrap{min-height:100vh;display:grid;place-items:center;padding:18px}
@@ -20,14 +22,15 @@ body{
   border:1px solid rgba(255,255,255,.12);
   border-radius:18px;
   padding:16px;
+  box-shadow:0 18px 50px rgba(0,0,0,.35);
 }
-h1{margin:0 0 12px}
+h1{margin:0 0 12px;font-size:22px}
 .row{display:flex;gap:10px;flex-wrap:wrap}
 input{
   flex:1;min-width:220px;
-  padding:12px;border-radius:12px;
+  padding:12px 14px;border-radius:12px;
   border:1px solid rgba(255,255,255,.12);
-  background:#0003;color:#fff;
+  background:rgba(0,0,0,.2);color:#fff;outline:none;
 }
 button{
   padding:12px 14px;border-radius:12px;
@@ -35,99 +38,7 @@ button{
   background:rgba(110,168,254,.22);
   color:#fff;font-weight:800;cursor:pointer;
 }
-.toggle{
-  background:rgba(255,255,255,.08);
-}
+.toggle{background:rgba(255,255,255,.08)}
 .status{
   margin-top:12px;padding:10px 12px;border-radius:12px;
-  border:1px solid rgba(255,255,255,.1);
-  background:#0003;font-size:14px;
-}
-iframe{
-  width:100%;
-  aspect-ratio:16/9;
-  border:0;
-  border-radius:14px;
-  margin-top:14px;
-  background:#000;
-}
-</style>
-</head>
-<body>
-
-<div class="wrap">
-  <div class="card">
-    <h1>🎧 Music Player</h1>
-
-    <div class="row">
-      <input id="q" placeholder="Paste link YouTube atau videoId">
-      <button id="play">▶ Play</button>
-      <button id="autoplay" class="toggle">Autoplay: OFF</button>
-    </div>
-
-    <div id="status" class="status">
-      Masukkan link YouTube / videoId, klik Play.
-    </div>
-
-    <div id="player"></div>
-  </div>
-</div>
-
-<!-- YouTube Iframe API -->
-<script src="https://www.youtube.com/iframe_api"></script>
-
-<script>
-let player;
-let currentVideoId = null;
-let autoplay = false;
-
-function extractVideoId(input){
-  input = (input||"").trim();
-  if (/^[\w-]{11}$/.test(input)) return input;
-  let m = input.match(/(?:v=|\/)([\w-]{11})/);
-  return m ? m[1] : null;
-}
-
-function setStatus(msg){
-  document.getElementById("status").textContent = msg;
-}
-
-function onYouTubeIframeAPIReady(){
-  player = new YT.Player('player', {
-    height: '360',
-    width: '640',
-    playerVars: { rel: 0 },
-    events: {
-      'onStateChange': onPlayerStateChange
-    }
-  });
-}
-
-function onPlayerStateChange(event){
-  // 0 = ENDED
-  if (event.data === YT.PlayerState.ENDED && autoplay) {
-    player.playVideo(); // loop / autoplay ulang
-    setStatus("Autoplay aktif → memutar ulang");
-  }
-}
-
-document.getElementById("play").onclick = () => {
-  const id = extractVideoId(document.getElementById("q").value);
-  if (!id) return setStatus("Link / videoId tidak valid");
-
-  currentVideoId = id;
-  player.loadVideoById(id);
-  setStatus("Memutar video");
-};
-
-document.getElementById("autoplay").onclick = function(){
-  autoplay = !autoplay;
-  this.textContent = "Autoplay: " + (autoplay ? "ON" : "OFF");
-  this.style.background = autoplay
-    ? "rgba(90,255,160,.25)"
-    : "rgba(255,255,255,.08)";
-};
-</script>
-
-</body>
-</html>
+  border:1px solid rgba(255,255,255,.10);background:rgba
