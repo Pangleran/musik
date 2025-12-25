@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Music Player</title>
+
+<style>
+body{
+  margin:0;
+  font-family:system-ui,Segoe UI,Roboto,Arial;
+  background:#0b1020;
+  color:#e8eefc;
+}
+.wrap{
+  min-height:100vh;
+  display:grid;
+  place-items:center;
+  padding:18px;
+}
+.card{
+  width:min(720px,94vw);
+  background:rgba(255,255,255,.06);
+  border:1px solid rgba(255,255,255,.12);
+  border-radius:16px;
+  padding:16px;
+}
+h1{margin:0 0 12px}
+input{
+  width:100%;
+  padding:12px;
+  border-radius:12px;
+  border:1px solid rgba(255,255,255,.12);
+  background:#0003;
+  color:white;
+}
+button{
+  margin-top:10px;
+  padding:12px;
+  width:100%;
+  border-radius:12px;
+  border:1px solid rgba(255,255,255,.12);
+  background:rgba(110,168,254,.22);
+  color:white;
+  font-weight:700;
+}
+iframe{
+  width:100%;
+  aspect-ratio:16/9;
+  border:0;
+  border-radius:14px;
+  margin-top:14px;
+}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <div class="card">
+    <h1>🎧 Music Player</h1>
+    <input id="q" placeholder="Masukkan judul lagu / artis">
+    <button onclick="play()">▶ Play</button>
+    <iframe id="player" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+  </div>
+</div>
+
+<script>
+function play(){
+  const q = document.getElementById("q").value.trim();
+  if(!q) return alert("Masukkan judul lagu");
+
+  const url = "https://www.youtube.com/results?search_query=" 
+              + encodeURIComponent(q);
+
+  fetch("https://cors.isomorphic-git.org/" + url)
+    .then(r=>r.text())
+    .then(html=>{
+      const m = html.match(/"videoId":"([a-zA-Z0-9_-]{11})"/);
+      if(!m) return alert("Video tidak ditemukan");
+      document.getElementById("player").src =
+        "https://www.youtube.com/embed/" + m[1] + "?autoplay=1";
+    });
+}
+</script>
+
+</body>
+</html>
