@@ -1,189 +1,186 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Music Tanpa Iklan</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pesan Untukmu ✨</title>
+  <style>
+    body {
+      height: 100vh;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      font-family: 'Segoe UI', sans-serif;
+      overflow: hidden;
+    }
 
-<style>
-*{box-sizing:border-box}
-body{
-  margin:0;
-  font-family:system-ui,Segoe UI,Roboto,Arial;
-  background:radial-gradient(900px 500px at 20% 0%, rgba(110,168,254,.22), transparent 60%),
-             radial-gradient(900px 500px at 80% 20%, rgba(0,0,0,.35), transparent 60%),
-             #0b1020;
-  color:#e8eefc;
-}
-.wrap{min-height:100vh;display:grid;place-items:center;padding:18px}
-.card{
-  width:min(720px,94vw);
-  background:rgba(255,255,255,.06);
-  border:1px solid rgba(255,255,255,.12);
-  border-radius:18px;
-  padding:16px;
-  box-shadow:0 18px 50px rgba(0,0,0,.35);
-}
-h1{margin:0 0 12px;font-size:22px}
-.row{display:flex;gap:10px;flex-wrap:wrap}
-input{
-  flex:1;min-width:220px;
-  padding:12px 14px;border-radius:12px;
-  border:1px solid rgba(255,255,255,.12);
-  background:rgba(0,0,0,.2);color:#fff;outline:none;
-}
-button{
-  padding:12px 14px;border-radius:12px;
-  border:1px solid rgba(255,255,255,.12);
-  background:rgba(110,168,254,.22);
-  color:#fff;font-weight:800;cursor:pointer;
-}
-.toggle{background:rgba(255,255,255,.08)}
-.status{
-  margin-top:12px;padding:10px 12px;border-radius:12px;
-  border:1px solid rgba(255,255,255,.10);background:rgba(0,0,0,.20);font-size:14px
-}
+    .card {
+      background: white;
+      padding: 40px;
+      border-radius: 24px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+      text-align: center;
+      max-width: 450px;
+      width: 90%;
+      position: relative;
+      overflow: hidden;
+    }
 
-/* === AUDIO MODE === */
-/* iframe disembunyikan total (video tetap jalan) */
-.player-audio-only{
-  position:absolute;
-  width:1px;
-  height:1px;
-  overflow:hidden;
-  opacity:0;
-  pointer-events:none;
-}
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 8px;
+      background: linear-gradient(90deg, #34a853, #4285f4, #ea4335, #fbbc05);
+    }
 
-/* Fake audio UI */
-.audio-ui{
-  margin-top:14px;
-  padding:14px;
-  border-radius:14px;
-  border:1px solid rgba(255,255,255,.12);
-  background:rgba(0,0,0,.25);
-}
-.audio-ui .title{
-  font-weight:800;
-  margin-bottom:6px;
-}
-.audio-ui .bar{
-  height:6px;
-  background:rgba(255,255,255,.15);
-  border-radius:6px;
-  overflow:hidden;
-}
-.audio-ui .bar span{
-  display:block;
-  height:100%;
-  width:40%;
-  background:rgba(110,168,254,.8);
-  animation: move 2s linear infinite;
-}
-@keyframes move{
-  0%{transform:translateX(-100%)}
-  100%{transform:translateX(300%)}
-}
-.hint{
-  opacity:.7;font-size:12px;margin-top:8px;
-}
-</style>
+    h1 {
+      color: #333;
+      font-size: 24px;
+      margin-bottom: 15px;
+    }
+
+    p {
+      color: #666;
+      line-height: 1.6;
+      margin-bottom: 30px;
+    }
+
+    .btn-container {
+      display: flex;
+      flex-direction: row;
+      gap: 15px;
+      align-items: center;
+      justify-content: center;
+    }
+
+    button {
+      flex: 1;
+      padding: 16px;
+      border: none;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+    }
+
+    #yesBtn {
+      background: #1a73e8;
+      color: white;
+    }
+
+    #yesBtn:hover {
+      background: #1557b0;
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(26, 115, 232, 0.4);
+    }
+
+    #noBtn {
+      background: #f8f9fa;
+      color: #5f6368;
+      border: 1px solid #dadce0;
+    }
+
+    /* Animasi Perubahan Tombol */
+    .btn-transformed {
+      animation: transformBtn 0.5s forwards;
+    }
+
+    @keyframes transformBtn {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.1); filter: brightness(1.2); }
+      100% { 
+        transform: scale(1); 
+        background: #34a853; 
+        color: white; 
+        border-color: transparent;
+      }
+    }
+
+    .cat-gif {
+      width: 100px;
+      margin-bottom: 20px;
+    }
+  </style>
 </head>
 <body>
 
-<div class="wrap">
   <div class="card">
-    <h1>🎧 Music Tanpa Iklan</h1>
-
-    <div class="row">
-      <input id="q" placeholder="Paste link YouTube atau videoId" />
-      <button id="play">▶ Play</button>
-      <button id="auto" class="toggle">Autoplay Next: OFF</button>
+    <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExNHJueGZ3bmZ3bmZ3bmZ3bmZ3bmZ3bmZ3bmZ3bmZ3bmZ3bmZ3JmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZCZjdD1z/MDJ9IbxxvDUQM/giphy.gif" alt="Cute" class="cat-gif">
+    <h1>Halo Rekan PKL Terkeren! ✨</h1>
+    <p>Sebelum melangkah ke petualangan baru, ada sedikit kenang-kenangan coklat manis buat kamu. Diterima ya?</p>
+    
+    <div class="btn-container">
+      <button id="yesBtn">Tentu! 🍫</button>
+      <button id="noBtn">Enggak...</button>
     </div>
-
-    <div id="status" class="status">
-      Masukkan link / videoId lalu klik Play.
-    </div>
-
-    <!-- UI palsu audio -->
-    <div class="audio-ui" id="audioUI" style="display:none">
-      <div class="title" id="nowPlaying">Now Playing</div>
-      <div class="bar"><span></span></div>
-      <div class="hint">© Iky Fareza Credits</div>
-    </div>
-
-    <!-- IFRAME YOUTUBE (DISEMBUNYIKAN) -->
-    <iframe id="player"
-      class="player-audio-only"
-      allow="autoplay; encrypted-media"
-      allowfullscreen>
-    </iframe>
   </div>
-</div>
 
-<script>
-const q = document.getElementById("q");
-const player = document.getElementById("player");
-const statusEl = document.getElementById("status");
-const audioUI = document.getElementById("audioUI");
-const nowPlaying = document.getElementById("nowPlaying");
-const autoBtn = document.getElementById("auto");
+  <audio id="bgMusic" loop>
+    <source src="backsound.mp3" type="audio/mpeg">
+  </audio>
 
-let autoplayNext = false;
+  <script>
+    const noBtn = document.getElementById('noBtn');
+    const yesBtn = document.getElementById('yesBtn');
+    let rejectionCount = 0;
 
-function setStatus(t){ statusEl.textContent = t; }
+    const rejectionTexts = [
+      "Eh, yakin?",
+      "Dikit aja kok...",
+      "Gak bikin gemuk!",
+      "Harganya mahal lho ini (bohong)",
+      "Yaudah, buat aku aja? (Gak deng)",
+      "Klik aja deh, gak ada pilihan lain hehe"
+    ];
 
-function extractVideoId(input){
-  input = (input || "").trim();
+    noBtn.addEventListener('click', () => {
+      if (rejectionCount < rejectionTexts.length) {
+        // Ganti teks tombol nolak
+        noBtn.innerText = rejectionTexts[rejectionCount];
+        
+        // Besarkan tombol "Ya", kecilkan tombol "Nggak"
+        const yesScale = 1 + (rejectionCount + 1) * 0.15;
+        const noScale = 1 - (rejectionCount + 1) * 0.1;
+        
+        yesBtn.style.transform = `scale(${yesScale})`;
+        noBtn.style.transform = `scale(${noScale})`;
+        
+        rejectionCount++;
+      } else {
+        // Efek Final: Paksa tombol nolak jadi tombol setuju
+        noBtn.classList.add('btn-transformed');
+        noBtn.innerText = "Oke deh, aku mau! ✨";
+        
+        setTimeout(() => {
+          goToAnimation();
+        }, 1000);
+      }
+    });
 
-  // kalau user langsung masukin videoId (11 karakter)
-  if (/^[\w-]{11}$/.test(input)) return input;
+    yesBtn.addEventListener('click', () => {
+      playMusic();
+      goToAnimation();
+    });
 
-  // youtu.be/VIDEOID
-  let m = input.match(/youtu\.be\/([\w-]{11})/);
-  if (m) return m[1];
+    function playMusic() {
+      const audio = document.getElementById('bgMusic');
+      audio.play().catch(e => console.log("Autoplay blocked, waiting for interaction"));
+    }
 
-  // youtube.com/watch?v=VIDEOID
-  m = input.match(/[?&]v=([\w-]{11})/);
-  if (m) return m[1];
-
-  // youtube.com/shorts/VIDEOID
-  m = input.match(/youtube\.com\/shorts\/([\w-]{11})/);
-  if (m) return m[1];
-
-  // embed/VIDEOID
-  m = input.match(/embed\/([\w-]{11})/);
-  if (m) return m[1];
-
-  return null;
-}
-
-document.getElementById("play").onclick = () => {
-  const id = extractVideoId(q.value);
-  if(!id) return setStatus("Link / videoId tidak valid");
-
-  const src = autoplayNext
-    ? `https://www.youtube.com/embed/${id}?autoplay=1&rel=0&controls=0&list=RD${id}`
-    : `https://www.youtube.com/embed/${id}?autoplay=1&rel=0&controls=0`;
-
-  player.src = src;
-
-  audioUI.style.display = "block";
-  nowPlaying.textContent = "Now Playing: " + id;
-  setStatus(autoplayNext
-    ? "Memutar musik + Autoplay Next aktif"
-    : "Memutar musik"
-  );
-};
-
-autoBtn.onclick = () => {
-  autoplayNext = !autoplayNext;
-  autoBtn.textContent = "Autoplay Next: " + (autoplayNext ? "ON" : "OFF");
-  autoBtn.style.background = autoplayNext
-    ? "rgba(90,255,160,.25)"
-    : "rgba(255,255,255,.08)";
-};
-</script>
-
+    function goToAnimation() {
+      document.body.style.transition = 'opacity 0.5s';
+      document.body.style.opacity = '0';
+      setTimeout(() => {
+        window.location.href = 'animasi.html';
+      }, 500);
+    }
+  </script>
 </body>
 </html>

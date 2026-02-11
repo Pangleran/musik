@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Happy Graduation PKL! 🎓</title>
+  <style>
+    body {
+      min-height: 100vh;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: #0f172a; /* Warna gelap elegan agar foto lebih menonjol */
+      font-family: 'Poppins', sans-serif;
+      overflow-x: hidden;
+      text-align: center;
+      color: white;
+      padding: 20px;
+      box-sizing: border-box;
+    }
+
+    .container {
+      position: absolute; /* Centering presisi */
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 20; /* Pastikan di atas emoji dan gambar */
+      background: rgba(255, 255, 255, 0.05);
+      padding: 30px;
+      border-radius: 24px;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+      max-width: 500px;
+      width: 85%;
+      margin: 0;
+    }
+
+    /* Emoji rain animation */
+    .confetti {
+      position: fixed;
+      top: -50px;
+      z-index: 15; /* Di bawah container tapi di atas gambar */
+      animation: fall linear forwards;
+      pointer-events: none;
+    }
+
+    @keyframes fall {
+      to {
+        transform: translateY(110vh) rotate(360deg);
+      }
+    }
+
+    /* Rolling Image Loop - Disesuaikan agar memenuhi layar */
+    .image-roller {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+      overflow: hidden;
+      opacity: 0.6;
+      pointer-events: none;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-around;
+    }
+
+    .image-track {
+      display: flex;
+      width: fit-content;
+      animation: scroll 40s linear infinite;
+    }
+
+    .image-track.reverse {
+      animation: scroll-reverse 45s linear infinite;
+    }
+
+    .image-track img {
+      width: 200px;
+      height: 150px;
+      object-fit: cover;
+      margin: 10px;
+      border-radius: 12px;
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+      border: 2px solid rgba(255, 255, 255, 0.2);
+      filter: brightness(0.8) contrast(1.1);
+    }
+
+    @keyframes scroll {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+
+    @keyframes scroll-reverse {
+      0% { transform: translateX(-50%); }
+      100% { transform: translateX(0); }
+    }
+
+    h1 {
+      font-size: 1.8rem;
+      margin-bottom: 15px;
+      background: linear-gradient(to right, #fff, #cbd5e1);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      font-weight: 700;
+    }
+
+    p {
+      font-size: 1rem;
+      line-height: 1.6;
+      margin-bottom: 25px;
+      color: #94a3b8;
+    }
+
+    .btn-back {
+      padding: 12px 32px;
+      background: #3b82f6;
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-weight: 600;
+      font-size: 0.95rem;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-block;
+      transition: all 0.3s;
+      box-shadow: 0 10px 15px -3px rgba(59, 130, 246, 0.3);
+    }
+
+    .btn-back:hover {
+      background: #2563eb;
+      transform: translateY(-2px);
+      box-shadow: 0 20px 25px -5px rgba(59, 130, 246, 0.4);
+    }
+
+    /* Media Queries untuk Mobile */
+    @media (max-width: 640px) {
+      .image-track img {
+        width: 150px;
+        height: 110px;
+      }
+      h1 { font-size: 1.5rem; }
+      p { font-size: 0.9rem; }
+      .container { 
+        padding: 25px; 
+        width: 85%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <audio id="bgMusic" autoplay loop>
+    <source src="backsound.mp3" type="audio/mpeg">
+  </audio>
+
+  <div class="image-roller">
+    <div class="image-track">
+      <img src="image/image1.jpg" alt="Grad 1">
+      <img src="image/image2.jpg" alt="Grad 2">
+      <img src="image/image3.jpg" alt="Grad 3">
+      <img src="image/image4.jpg" alt="Grad 4">
+      <img src="image/image5.jpg" alt="Grad 5">
+      <img src="image/image6.jpg" alt="Grad 6">
+      <img src="image/image7.jpg" alt="Grad 7">
+      <!-- Duplicate for seamless loop -->
+      <img src="image/image1.jpg" alt="Grad 1">
+      <img src="image/image2.jpg" alt="Grad 2">
+      <img src="image/image3.jpg" alt="Grad 3">
+      <img src="image/image4.jpg" alt="Grad 4">
+      <img src="image/image5.jpg" alt="Grad 5">
+      <img src="image/image6.jpg" alt="Grad 6">
+      <img src="image/image7.jpg" alt="Grad 7">
+    </div>
+    <div class="image-track reverse">
+      <img src="image/image4.jpg" alt="Grad 4">
+      <img src="image/image5.jpg" alt="Grad 5">
+      <img src="image/image6.jpg" alt="Grad 6">
+      <img src="image/image7.jpg" alt="Grad 7">
+      <img src="image/image1.jpg" alt="Grad 1">
+      <img src="image/image2.jpg" alt="Grad 2">
+      <img src="image/image3.jpg" alt="Grad 3">
+      <!-- Duplicate for seamless loop -->
+      <img src="image/image4.jpg" alt="Grad 4">
+      <img src="image/image5.jpg" alt="Grad 5">
+      <img src="image/image6.jpg" alt="Grad 6">
+      <img src="image/image7.jpg" alt="Grad 7">
+      <img src="image/image1.jpg" alt="Grad 1">
+      <img src="image/image2.jpg" alt="Grad 2">
+      <img src="image/image3.jpg" alt="Grad 3">
+    </div>
+  </div>
+
+  <div class="container">
+    <h1>Selamat & Terima Kasih! 🎓✨</h1>
+    <p>Coklat ini cuma simbol kecil rasa terima kasih kami atas bantuan kamu selama PKL di sini. Kamu hebat, sukses terus di sekolah/kuliah dan karir ke depannya ya! 🍫🚀</p>
+    <a href="index.html" class="btn-back">Kembali</a>
+  </div>
+
+  <script>
+    function createConfetti() {
+      const items = ['🍫', '✨', '⭐', '🎓', '🎉', '💙'];
+      const el = document.createElement('div');
+      el.innerHTML = items[Math.floor(Math.random() * items.length)];
+      el.classList.add('confetti');
+      el.style.left = Math.random() * 100 + 'vw';
+      el.style.fontSize = (Math.random() * 20 + 20) + 'px';
+      el.style.animationDuration = (Math.random() * 3 + 2) + 's';
+      document.body.appendChild(el);
+      
+      setTimeout(() => {
+        el.remove();
+      }, 5000);
+    }
+
+    setInterval(createConfetti, 150);
+  </script>
+</body>
+</html>
