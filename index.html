@@ -1,186 +1,1622 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Pesan Untukmu ✨</title>
-  <style>
-    body {
-      height: 100vh;
-      margin: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-      font-family: 'Segoe UI', sans-serif;
-      overflow: hidden;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Puppeteer Node.js — Full Documentation</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Syne:wght@400;600;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0f14;
+    --surface: #13161e;
+    --surface2: #1a1e2a;
+    --border: #252a38;
+    --accent: #00e5ff;
+    --accent2: #7c3aed;
+    --accent3: #f59e0b;
+    --text: #e2e8f0;
+    --muted: #64748b;
+    --code-bg: #0a0c12;
+    --green: #22c55e;
+    --red: #ef4444;
+    --yellow: #f59e0b;
+  }
 
-    .card {
-      background: white;
-      padding: 40px;
-      border-radius: 24px;
-      box-shadow: 0 20px 40px rgba(0,0,0,0.1);
-      text-align: center;
-      max-width: 450px;
-      width: 90%;
-      position: relative;
-      overflow: hidden;
-    }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
 
-    .card::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 8px;
-      background: linear-gradient(90deg, #34a853, #4285f4, #ea4335, #fbbc05);
-    }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    line-height: 1.7;
+    display: flex;
+    min-height: 100vh;
+  }
 
-    h1 {
-      color: #333;
-      font-size: 24px;
-      margin-bottom: 15px;
-    }
+  /* SIDEBAR */
+  #sidebar {
+    width: 260px;
+    min-width: 260px;
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    position: fixed;
+    top: 0; left: 0; bottom: 0;
+    overflow-y: auto;
+    z-index: 100;
+    padding: 0 0 40px;
+  }
 
-    p {
-      color: #666;
-      line-height: 1.6;
-      margin-bottom: 30px;
-    }
+  .sidebar-logo {
+    padding: 24px 20px 16px;
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    background: var(--surface);
+    z-index: 10;
+  }
 
-    .btn-container {
-      display: flex;
-      flex-direction: row;
-      gap: 15px;
-      align-items: center;
-      justify-content: center;
-    }
+  .sidebar-logo .brand {
+    font-family: 'Syne', sans-serif;
+    font-size: 18px;
+    font-weight: 800;
+    color: var(--accent);
+    letter-spacing: -0.5px;
+  }
 
-    button {
-      flex: 1;
-      padding: 16px;
-      border: none;
-      border-radius: 12px;
-      font-size: 16px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      position: relative;
-    }
+  .sidebar-logo .version {
+    font-size: 11px;
+    color: var(--muted);
+    font-family: 'JetBrains Mono', monospace;
+    margin-top: 2px;
+  }
 
-    #yesBtn {
-      background: #1a73e8;
-      color: white;
-    }
+  .nav-section {
+    padding: 16px 12px 4px;
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    color: var(--muted);
+  }
 
-    #yesBtn:hover {
-      background: #1557b0;
-      transform: translateY(-2px);
-      box-shadow: 0 5px 15px rgba(26, 115, 232, 0.4);
-    }
+  .nav-item {
+    display: block;
+    padding: 7px 20px;
+    color: #94a3b8;
+    text-decoration: none;
+    font-size: 13.5px;
+    border-left: 2px solid transparent;
+    transition: all 0.15s;
+  }
 
-    #noBtn {
-      background: #f8f9fa;
-      color: #5f6368;
-      border: 1px solid #dadce0;
-    }
+  .nav-item:hover, .nav-item.active {
+    color: var(--accent);
+    border-left-color: var(--accent);
+    background: rgba(0, 229, 255, 0.04);
+  }
 
-    /* Animasi Perubahan Tombol */
-    .btn-transformed {
-      animation: transformBtn 0.5s forwards;
-    }
+  .nav-item .badge {
+    float: right;
+    font-size: 10px;
+    background: var(--accent2);
+    color: #fff;
+    padding: 1px 6px;
+    border-radius: 20px;
+    font-family: 'JetBrains Mono', monospace;
+  }
 
-    @keyframes transformBtn {
-      0% { transform: scale(1); }
-      50% { transform: scale(1.1); filter: brightness(1.2); }
-      100% { 
-        transform: scale(1); 
-        background: #34a853; 
-        color: white; 
-        border-color: transparent;
-      }
-    }
+  /* MAIN */
+  #main {
+    margin-left: 260px;
+    flex: 1;
+    max-width: 860px;
+    padding: 48px 52px 80px;
+  }
 
-    .cat-gif {
-      width: 100px;
-      margin-bottom: 20px;
-    }
-  </style>
+  /* HERO */
+  .hero {
+    margin-bottom: 56px;
+    padding-bottom: 40px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .hero-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--accent);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+
+  .hero h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: 52px;
+    font-weight: 800;
+    letter-spacing: -2px;
+    line-height: 1;
+    background: linear-gradient(135deg, #fff 30%, var(--accent) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 16px;
+  }
+
+  .hero p {
+    font-size: 17px;
+    color: #94a3b8;
+    max-width: 560px;
+    line-height: 1.6;
+  }
+
+  .hero-badges {
+    display: flex;
+    gap: 10px;
+    margin-top: 24px;
+    flex-wrap: wrap;
+  }
+
+  .badge-pill {
+    font-size: 12px;
+    font-family: 'JetBrains Mono', monospace;
+    padding: 4px 12px;
+    border-radius: 20px;
+    border: 1px solid;
+  }
+
+  .badge-pill.cyan { border-color: var(--accent); color: var(--accent); }
+  .badge-pill.purple { border-color: var(--accent2); color: #a78bfa; }
+  .badge-pill.yellow { border-color: var(--accent3); color: var(--accent3); }
+
+  /* SECTIONS */
+  .section {
+    margin-bottom: 60px;
+  }
+
+  h2 {
+    font-family: 'Syne', sans-serif;
+    font-size: 26px;
+    font-weight: 800;
+    letter-spacing: -0.8px;
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding-top: 8px;
+  }
+
+  h2 .anchor { color: var(--accent); font-size: 18px; text-decoration: none; }
+  h2 .section-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    color: var(--muted);
+    font-weight: 400;
+  }
+
+  .section-divider {
+    height: 1px;
+    background: linear-gradient(90deg, var(--border) 0%, transparent 100%);
+    margin: 12px 0 24px;
+  }
+
+  h3 {
+    font-family: 'Syne', sans-serif;
+    font-size: 17px;
+    font-weight: 600;
+    color: #cbd5e1;
+    margin: 28px 0 10px;
+  }
+
+  p { margin-bottom: 14px; color: #94a3b8; }
+
+  /* CODE */
+  .code-block {
+    position: relative;
+    margin: 16px 0 24px;
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    background: var(--code-bg);
+  }
+
+  .code-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 16px;
+    background: var(--surface2);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .code-lang {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .code-copy {
+    font-size: 11px;
+    color: var(--muted);
+    cursor: pointer;
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    padding: 3px 10px;
+    border-radius: 4px;
+    font-family: 'JetBrains Mono', monospace;
+    transition: all 0.15s;
+  }
+
+  .code-copy:hover { color: var(--text); border-color: #475569; }
+
+  pre {
+    padding: 20px 20px;
+    overflow-x: auto;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    line-height: 1.75;
+    color: #e2e8f0;
+  }
+
+  /* Syntax highlighting */
+  .kw { color: #c792ea; }
+  .fn { color: #82aaff; }
+  .str { color: #c3e88d; }
+  .num { color: #f78c6c; }
+  .cmt { color: #546e7a; font-style: italic; }
+  .cls { color: #ffcb6b; }
+  .var { color: #f07178; }
+  .prop { color: #89ddff; }
+  .op { color: #89ddff; }
+  .bool { color: #ff5370; }
+
+  /* CALLOUTS */
+  .callout {
+    padding: 14px 18px;
+    border-radius: 8px;
+    margin: 16px 0 24px;
+    border-left: 3px solid;
+    font-size: 14px;
+  }
+
+  .callout.info { background: rgba(0,229,255,0.06); border-color: var(--accent); }
+  .callout.warn { background: rgba(245,158,11,0.06); border-color: var(--yellow); }
+  .callout.danger { background: rgba(239,68,68,0.06); border-color: var(--red); }
+  .callout.tip { background: rgba(34,197,94,0.06); border-color: var(--green); }
+
+  .callout strong { color: var(--text); }
+  .callout p { margin: 4px 0 0; color: #94a3b8; font-size: 13.5px; }
+
+  /* TABLE */
+  .table-wrap { overflow-x: auto; margin: 16px 0 24px; border-radius: 8px; border: 1px solid var(--border); }
+  table { width: 100%; border-collapse: collapse; }
+  th {
+    background: var(--surface2);
+    padding: 10px 16px;
+    text-align: left;
+    font-family: 'Syne', sans-serif;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: var(--muted);
+    border-bottom: 1px solid var(--border);
+  }
+  td {
+    padding: 10px 16px;
+    border-bottom: 1px solid var(--border);
+    font-size: 13.5px;
+    color: #94a3b8;
+    vertical-align: top;
+  }
+  td:first-child { font-family: 'JetBrains Mono', monospace; color: var(--accent); font-size: 12.5px; }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: rgba(255,255,255,0.02); }
+
+  /* INLINE CODE */
+  code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12.5px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    padding: 1px 6px;
+    border-radius: 4px;
+    color: var(--accent);
+  }
+
+  /* STEPS */
+  .steps { counter-reset: step; }
+  .step {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 20px;
+    counter-increment: step;
+  }
+  .step-num {
+    width: 28px; height: 28px; min-width: 28px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--accent);
+    margin-top: 3px;
+  }
+  .step-body h4 { font-family: 'Syne', sans-serif; font-size: 14px; font-weight: 600; margin-bottom: 4px; color: var(--text); }
+  .step-body p { margin: 0; font-size: 13.5px; }
+
+  /* API CARD */
+  .api-card {
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    margin-bottom: 16px;
+    overflow: hidden;
+  }
+  .api-card-header {
+    padding: 12px 18px;
+    background: var(--surface2);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .api-method {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-weight: 600;
+  }
+  .api-method.async { background: rgba(124,58,237,0.2); color: #a78bfa; }
+  .api-method.sync { background: rgba(34,197,94,0.2); color: #4ade80; }
+  .api-name { font-family: 'JetBrains Mono', monospace; font-size: 14px; color: var(--text); }
+  .api-return { margin-left: auto; font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--muted); }
+  .api-card-body { padding: 14px 18px; font-size: 13.5px; color: #94a3b8; }
+  .api-params { margin-top: 10px; }
+  .api-param { display: flex; gap: 10px; padding: 6px 0; border-top: 1px solid var(--border); font-size: 13px; }
+  .param-name { font-family: 'JetBrains Mono', monospace; color: var(--accent3); min-width: 120px; font-size: 12px; }
+  .param-type { font-family: 'JetBrains Mono', monospace; color: #a78bfa; min-width: 90px; font-size: 12px; }
+
+  /* SCROLLBAR */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+  /* GRID 2 */
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 16px 0 24px; }
+  .feat-card {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px;
+  }
+  .feat-card .icon { font-size: 20px; margin-bottom: 8px; }
+  .feat-card h4 { font-family: 'Syne', sans-serif; font-size: 14px; font-weight: 600; margin-bottom: 4px; }
+  .feat-card p { font-size: 13px; margin: 0; }
+
+  @media (max-width: 700px) {
+    #sidebar { transform: translateX(-100%); }
+    #main { margin-left: 0; padding: 24px 20px 60px; }
+    .grid2 { grid-template-columns: 1fr; }
+  }
+</style>
 </head>
 <body>
 
-  <div class="card">
-    <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExNHJueGZ3bmZ3bmZ3bmZ3bmZ3bmZ3bmZ3bmZ3bmZ3bmZ3bmZ3JmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZCZjdD1z/MDJ9IbxxvDUQM/giphy.gif" alt="Cute" class="cat-gif">
-    <h1>Halo Rekan PKL Terkeren! ✨</h1>
-    <p>Sebelum melangkah ke petualangan baru, ada sedikit kenang-kenangan coklat manis buat kamu. Diterima ya?</p>
-    
-    <div class="btn-container">
-      <button id="yesBtn">Tentu! 🍫</button>
-      <button id="noBtn">Enggak...</button>
+<!-- SIDEBAR -->
+<nav id="sidebar">
+  <div class="sidebar-logo">
+    <div class="brand">🎭 Puppeteer</div>
+    <div class="version">Node.js · v22+ · Full Docs</div>
+  </div>
+
+  <div class="nav-section">Mulai</div>
+  <a class="nav-item active" href="#intro">Pengantar</a>
+  <a class="nav-item" href="#install">Instalasi</a>
+  <a class="nav-item" href="#quickstart">Quick Start</a>
+
+  <div class="nav-section">Inti</div>
+  <a class="nav-item" href="#launch">Launch & Browser</a>
+  <a class="nav-item" href="#page">Page & Navigation</a>
+  <a class="nav-item" href="#selector">Selector & DOM</a>
+  <a class="nav-item" href="#input">Input & Interaksi</a>
+  <a class="nav-item" href="#screenshot">Screenshot & PDF</a>
+
+  <div class="nav-section">Lanjutan</div>
+  <a class="nav-item" href="#network">Network & Request</a>
+  <a class="nav-item" href="#evaluate">Evaluate & Script</a>
+  <a class="nav-item" href="#wait">Waiting Strategies</a>
+  <a class="nav-item" href="#frames">Frames & iFrame</a>
+  <a class="nav-item" href="#cookies">Cookies & Storage</a>
+  <a class="nav-item" href="#auth">Autentikasi</a>
+
+  <div class="nav-section">Optimasi</div>
+  <a class="nav-item" href="#headless">Headless Mode</a>
+  <a class="nav-item" href="#performance">Performance</a>
+  <a class="nav-item" href="#concurrency">Concurrency</a>
+
+  <div class="nav-section">Referensi</div>
+  <a class="nav-item" href="#api">API Reference</a>
+  <a class="nav-item" href="#errors">Error Handling</a>
+  <a class="nav-item" href="#tips">Tips & Tricks</a>
+</nav>
+
+<!-- MAIN -->
+<main id="main">
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-label">Full Documentation</div>
+    <h1>Puppeteer</h1>
+    <p>Library Node.js untuk mengontrol browser Chrome/Chromium secara programatik — scraping, testing, otomasi, screenshot, dan PDF generation.</p>
+    <div class="hero-badges">
+      <span class="badge-pill cyan">Node.js v18+</span>
+      <span class="badge-pill purple">Chromium</span>
+      <span class="badge-pill yellow">v22.x Latest</span>
     </div>
   </div>
 
-  <audio id="bgMusic" loop>
-    <source src="backsound.mp3" type="audio/mpeg">
-  </audio>
+  <!-- =============================== -->
+  <!-- 1. PENGANTAR -->
+  <!-- =============================== -->
+  <div class="section" id="intro">
+    <h2><span class="section-num">01</span> Pengantar</h2>
+    <div class="section-divider"></div>
+    <p>Puppeteer adalah library resmi Google untuk mengontrol Chrome/Chromium melalui <strong style="color:#e2e8f0">DevTools Protocol</strong>. Cocok untuk automasi browser, web scraping, pengujian UI, dan pembuatan screenshot/PDF.</p>
 
-  <script>
-    const noBtn = document.getElementById('noBtn');
-    const yesBtn = document.getElementById('yesBtn');
-    let rejectionCount = 0;
+    <div class="grid2">
+      <div class="feat-card"><div class="icon">🕷️</div><h4>Web Scraping</h4><p>Ambil konten dari halaman web yang membutuhkan JavaScript rendering.</p></div>
+      <div class="feat-card"><div class="icon">🧪</div><h4>Testing UI</h4><p>Uji aplikasi web secara end-to-end dengan simulasi klik dan input pengguna.</p></div>
+      <div class="feat-card"><div class="icon">📸</div><h4>Screenshot</h4><p>Tangkap halaman penuh atau elemen tertentu sebagai gambar PNG/JPEG.</p></div>
+      <div class="feat-card"><div class="icon">📄</div><h4>PDF Generator</h4><p>Buat PDF dari halaman web dengan kontrol penuh atas ukuran dan margin.</p></div>
+    </div>
 
-    const rejectionTexts = [
-      "Eh, yakin?",
-      "Dikit aja kok...",
-      "Gak bikin gemuk!",
-      "Harganya mahal lho ini (bohong)",
-      "Yaudah, buat aku aja? (Gak deng)",
-      "Klik aja deh, gak ada pilihan lain hehe"
-    ];
+    <div class="callout info">
+      <strong>ℹ️ Puppeteer vs Playwright</strong>
+      <p>Puppeteer fokus pada Chrome/Chromium. Jika butuh Firefox/Safari juga, pertimbangkan Playwright. Keduanya memiliki API yang mirip.</p>
+    </div>
+  </div>
 
-    noBtn.addEventListener('click', () => {
-      if (rejectionCount < rejectionTexts.length) {
-        // Ganti teks tombol nolak
-        noBtn.innerText = rejectionTexts[rejectionCount];
-        
-        // Besarkan tombol "Ya", kecilkan tombol "Nggak"
-        const yesScale = 1 + (rejectionCount + 1) * 0.15;
-        const noScale = 1 - (rejectionCount + 1) * 0.1;
-        
-        yesBtn.style.transform = `scale(${yesScale})`;
-        noBtn.style.transform = `scale(${noScale})`;
-        
-        rejectionCount++;
-      } else {
-        // Efek Final: Paksa tombol nolak jadi tombol setuju
-        noBtn.classList.add('btn-transformed');
-        noBtn.innerText = "Oke deh, aku mau! ✨";
-        
-        setTimeout(() => {
-          goToAnimation();
-        }, 1000);
+  <!-- =============================== -->
+  <!-- 2. INSTALASI -->
+  <!-- =============================== -->
+  <div class="section" id="install">
+    <h2><span class="section-num">02</span> Instalasi</h2>
+    <div class="section-divider"></div>
+
+    <h3>Install via npm</h3>
+    <div class="code-block">
+      <div class="code-header"><span class="code-lang">bash</span><button class="code-copy" onclick="copyCode(this)">copy</button></div>
+      <pre><span class="cmt"># Install puppeteer (sudah include Chromium ~170MB)</span>
+npm install puppeteer
+
+<span class="cmt"># Atau hanya library tanpa download Chromium</span>
+npm install puppeteer-core</pre>
+    </div>
+
+    <h3>Perbedaan puppeteer vs puppeteer-core</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Paket</th><th>Deskripsi</th><th>Ukuran</th></tr></thead>
+        <tbody>
+          <tr><td>puppeteer</td><td>Include Chromium otomatis, siap pakai langsung</td><td>~300MB</td></tr>
+          <tr><td>puppeteer-core</td><td>Tanpa Chromium, gunakan browser yang sudah ada</td><td>~3MB</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Verifikasi Instalasi</h3>
+    <div class="code-block">
+      <div class="code-header"><span class="code-lang">javascript</span><button class="code-copy" onclick="copyCode(this)">copy</button></div>
+      <pre><span class="kw">const</span> puppeteer <span class="op">=</span> <span class="fn">require</span>(<span class="str">'puppeteer'</span>);
+console.<span class="fn">log</span>(puppeteer.<span class="prop">executablePath</span>()); <span class="cmt">// path ke Chromium</span></pre>
+    </div>
+
+    <div class="callout warn">
+      <strong>⚠️ Linux Dependencies</strong>
+      <p>Di Linux, Chromium membutuhkan beberapa library sistem. Jalankan: <code>npx puppeteer browsers install chrome</code> untuk memperbaiki dependensi otomatis.</p>
+    </div>
+  </div>
+
+  <!-- =============================== -->
+  <!-- 3. QUICK START -->
+  <!-- =============================== -->
+  <div class="section" id="quickstart">
+    <h2><span class="section-num">03</span> Quick Start</h2>
+    <div class="section-divider"></div>
+
+    <h3>Hello World — Screenshot</h3>
+    <div class="code-block">
+      <div class="code-header"><span class="code-lang">javascript</span><button class="code-copy" onclick="copyCode(this)">copy</button></div>
+      <pre><span class="kw">const</span> puppeteer <span class="op">=</span> <span class="fn">require</span>(<span class="str">'puppeteer'</span>);
+
+(<span class="kw">async</span> () <span class="op">=></span> {
+  <span class="cmt">// 1. Launch browser</span>
+  <span class="kw">const</span> browser <span class="op">=</span> <span class="kw">await</span> puppeteer.<span class="fn">launch</span>();
+
+  <span class="cmt">// 2. Buka tab baru</span>
+  <span class="kw">const</span> page <span class="op">=</span> <span class="kw">await</span> browser.<span class="fn">newPage</span>();
+
+  <span class="cmt">// 3. Navigasi ke URL</span>
+  <span class="kw">await</span> page.<span class="fn">goto</span>(<span class="str">'https://example.com'</span>);
+
+  <span class="cmt">// 4. Ambil screenshot</span>
+  <span class="kw">await</span> page.<span class="fn">screenshot</span>({ path: <span class="str">'example.png'</span> });
+
+  <span class="cmt">// 5. Tutup browser</span>
+  <span class="kw">await</span> browser.<span class="fn">close</span>();
+})();</pre>
+    </div>
+
+    <h3>Hello World — Web Scraping</h3>
+    <div class="code-block">
+      <div class="code-header"><span class="code-lang">javascript</span><button class="code-copy" onclick="copyCode(this)">copy</button></div>
+      <pre><span class="kw">const</span> puppeteer <span class="op">=</span> <span class="fn">require</span>(<span class="str">'puppeteer'</span>);
+
+(<span class="kw">async</span> () <span class="op">=></span> {
+  <span class="kw">const</span> browser <span class="op">=</span> <span class="kw">await</span> puppeteer.<span class="fn">launch</span>();
+  <span class="kw">const</span> page <span class="op">=</span> <span class="kw">await</span> browser.<span class="fn">newPage</span>();
+
+  <span class="kw">await</span> page.<span class="fn">goto</span>(<span class="str">'https://quotes.toscrape.com'</span>);
+
+  <span class="cmt">// Ambil semua quote dari halaman</span>
+  <span class="kw">const</span> quotes <span class="op">=</span> <span class="kw">await</span> page.<span class="fn">evaluate</span>(() <span class="op">=></span> {
+    <span class="kw">return</span> [...document.<span class="fn">querySelectorAll</span>(<span class="str">'.quote'</span>)].<span class="fn">map</span>(el <span class="op">=></span> ({
+      text: el.<span class="fn">querySelector</span>(<span class="str">'.text'</span>)?.textContent,
+      author: el.<span class="fn">querySelector</span>(<span class="str">'.author'</span>)?.textContent,
+    }));
+  });
+
+  console.<span class="fn">log</span>(quotes);
+  <span class="kw">await</span> browser.<span class="fn">close</span>();
+})();</pre>
+    </div>
+  </div>
+
+  <!-- =============================== -->
+  <!-- 4. LAUNCH & BROWSER -->
+  <!-- =============================== -->
+  <div class="section" id="launch">
+    <h2><span class="section-num">04</span> Launch & Browser</h2>
+    <div class="section-divider"></div>
+
+    <h3>Opsi Launch</h3>
+    <div class="code-block">
+      <div class="code-header"><span class="code-lang">javascript</span><button class="code-copy" onclick="copyCode(this)">copy</button></div>
+      <pre><span class="kw">const</span> browser <span class="op">=</span> <span class="kw">await</span> puppeteer.<span class="fn">launch</span>({
+  headless: <span class="str">'new'</span>,          <span class="cmt">// 'new' = headless baru (default), false = tampilkan UI</span>
+  slowMo: <span class="num">50</span>,              <span class="cmt">// Perlambat operasi 50ms (berguna untuk debugging)</span>
+  devtools: <span class="bool">true</span>,           <span class="cmt">// Buka DevTools otomatis</span>
+  defaultViewport: {
+    width: <span class="num">1280</span>,
+    height: <span class="num">720</span>,
+    deviceScaleFactor: <span class="num">2</span>,  <span class="cmt">// Retina display</span>
+  },
+  args: [
+    <span class="str">'--no-sandbox'</span>,         <span class="cmt">// Wajib untuk lingkungan Docker/CI</span>
+    <span class="str">'--disable-setuid-sandbox'</span>,
+    <span class="str">'--disable-dev-shm-usage'</span>, <span class="cmt">// Mencegah crash di container</span>
+    <span class="str">'--disable-gpu'</span>,
+    <span class="str">'--window-size=1280,720'</span>,
+  ],
+  executablePath: <span class="str">'/usr/bin/google-chrome'</span>, <span class="cmt">// Gunakan Chrome sistem</span>
+  userDataDir: <span class="str">'./user-data'</span>,  <span class="cmt">// Simpan session/profil</span>
+  timeout: <span class="num">30000</span>,             <span class="cmt">// Timeout launch (ms)</span>
+});</pre>
+    </div>
+
+    <h3>Browser Methods</h3>
+    <div class="code-block">
+      <div class="code-header"><span class="code-lang">javascript</span><button class="code-copy" onclick="copyCode(this)">copy</button></div>
+      <pre><span class="cmt">// Buat halaman baru</span>
+<span class="kw">const</span> page <span class="op">=</span> <span class="kw">await</span> browser.<span class="fn">newPage</span>();
+
+<span class="cmt">// Dapatkan semua halaman yang terbuka</span>
+<span class="kw">const</span> pages <span class="op">=</span> <span class="kw">await</span> browser.<span class="fn">pages</span>();
+
+<span class="cmt">// Koneksi ke browser yang sudah berjalan</span>
+<span class="kw">const</span> browser2 <span class="op">=</span> <span class="kw">await</span> puppeteer.<span class="fn">connect</span>({
+  browserWSEndpoint: browser.<span class="fn">wsEndpoint</span>(),
+});
+
+<span class="cmt">// Event ketika halaman baru dibuka</span>
+browser.<span class="fn">on</span>(<span class="str">'targetcreated'</span>, <span class="kw">async</span> (target) <span class="op">=></span> {
+  <span class="kw">if</span> (target.<span class="fn">type</span>() <span class="op">===</span> <span class="str">'page'</span>) {
+    <span class="kw">const</span> newPage <span class="op">=</span> <span class="kw">await</span> target.<span class="fn">page</span>();
+    console.<span class="fn">log</span>(<span class="str">'Halaman baru:'</span>, <span class="kw">await</span> newPage.<span class="fn">title</span>());
+  }
+});
+
+<span class="cmt">// Tutup browser</span>
+<span class="kw">await</span> browser.<span class="fn">close</span>();</pre>
+    </div>
+  </div>
+
+  <!-- =============================== -->
+  <!-- 5. PAGE & NAVIGATION -->
+  <!-- =============================== -->
+  <div class="section" id="page">
+    <h2><span class="section-num">05</span> Page & Navigation</h2>
+    <div class="section-divider"></div>
+
+    <h3>Navigasi Dasar</h3>
+    <div class="code-block">
+      <div class="code-header"><span class="code-lang">javascript</span><button class="code-copy" onclick="copyCode(this)">copy</button></div>
+      <pre><span class="cmt">// goto dengan opsi lengkap</span>
+<span class="kw">await</span> page.<span class="fn">goto</span>(<span class="str">'https://example.com'</span>, {
+  waitUntil: <span class="str">'networkidle2'</span>, <span class="cmt">// 'load' | 'domcontentloaded' | 'networkidle0' | 'networkidle2'</span>
+  timeout: <span class="num">30000</span>,
+});
+
+<span class="cmt">// Navigasi browser</span>
+<span class="kw">await</span> page.<span class="fn">goBack</span>();
+<span class="kw">await</span> page.<span class="fn">goForward</span>();
+<span class="kw">await</span> page.<span class="fn">reload</span>({ waitUntil: <span class="str">'networkidle0'</span> });
+
+<span class="cmt">// URL dan judul</span>
+console.<span class="fn">log</span>(page.<span class="fn">url</span>());
+console.<span class="fn">log</span>(<span class="kw">await</span> page.<span class="fn">title</span>());</pre>
+    </div>
+
+    <h3>Opsi waitUntil</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Nilai</th><th>Keterangan</th></tr></thead>
+        <tbody>
+          <tr><td>load</td><td>Tunggu event <code>load</code> pada window</td></tr>
+          <tr><td>domcontentloaded</td><td>Tunggu DOM selesai diparse (cepat)</td></tr>
+          <tr><td>networkidle0</td><td>Tidak ada request selama 500ms (sangat stabil)</td></tr>
+          <tr><td>networkidle2</td><td>Maksimal 2 request aktif selama 500ms (direkomendasikan)</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Viewport & Emulasi</h3>
+    <div class="code-block">
+      <div class="code-header"><span class="code-lang">javascript</span><button class="code-copy" onclick="copyCode(this)">copy</button></div>
+      <pre><span class="cmt">// Set viewport manual</span>
+<span class="kw">await</span> page.<span class="fn">setViewport</span>({ width: <span class="num">1920</span>, height: <span class="num">1080</span> });
+
+<span class="cmt">// Emulasi device (mobile)</span>
+<span class="kw">const</span> { KnownDevices } <span class="op">=</span> <span class="fn">require</span>(<span class="str">'puppeteer'</span>);
+<span class="kw">await</span> page.<span class="fn">emulate</span>(KnownDevices[<span class="str">'iPhone 15'</span>]);
+
+<span class="cmt">// Emulasi media</span>
+<span class="kw">await</span> page.<span class="fn">emulateMediaType</span>(<span class="str">'print'</span>); <span class="cmt">// untuk generate PDF yang tepat</span>
+
+<span class="cmt">// User agent kustom</span>
+<span class="kw">await</span> page.<span class="fn">setUserAgent</span>(<span class="str">'Mozilla/5.0 (Windows NT 10.0; Win64; x64) ...'</span>);</pre>
+    </div>
+  </div>
+
+  <!-- =============================== -->
+  <!-- 6. SELECTOR & DOM -->
+  <!-- =============================== -->
+  <div class="section" id="selector">
+    <h2><span class="section-num">06</span> Selector & DOM</h2>
+    <div class="section-divider"></div>
+
+    <h3>Memilih Elemen</h3>
+    <div class="code-block">
+      <div class="code-header"><span class="code-lang">javascript</span><button class="code-copy" onclick="copyCode(this)">copy</button></div>
+      <pre><span class="cmt">// Cari satu elemen (ElementHandle)</span>
+<span class="kw">const</span> el <span class="op">=</span> <span class="kw">await</span> page.$(<span class="str">'#submit-btn'</span>);
+
+<span class="cmt">// Cari banyak elemen</span>
+<span class="kw">const</span> items <span class="op">=</span> <span class="kw">await</span> page.$$(<span class="str">'.list-item'</span>);
+
+<span class="cmt">// Gunakan XPath</span>
+<span class="kw">const</span> el <span class="op">=</span> <span class="kw">await</span> page.$(<span class="str">'xpath//button[text()="Submit"]'</span>);
+
+<span class="cmt">// CSS Selector modern (Puppeteer v21+)</span>
+<span class="kw">const</span> el <span class="op">=</span> <span class="kw">await</span> page.$(<span class="str">'button:has-text("Login")'</span>);
+<span class="kw">const</span> el <span class="op">=</span> <span class="kw">await</span> page.$(<span class="str">'input[name="email"]'</span>);
+
+<span class="cmt">// Cek apakah elemen ada</span>
+<span class="kw">const</span> exists <span class="op">=</span> (<span class="kw">await</span> page.$(<span class="str">'#modal'</span>)) <span class="op">!==</span> <span class="bool">null</span>;</pre>
+    </div>
+
+    <h3>Mengambil Data dari DOM</h3>
+    <div class="code-block">
+      <div class="code-header"><span class="code-lang">javascript</span><button class="code-copy" onclick="copyCode(this)">copy</button></div>
+      <pre><span class="cmt">// Ambil teks dari elemen</span>
+<span class="kw">const</span> text <span class="op">=</span> <span class="kw">await</span> page.$<span class="fn">eval</span>(<span class="str">'h1'</span>, el <span class="op">=></span> el.textContent);
+
+<span class="cmt">// Ambil attribute</span>
+<span class="kw">const</span> href <span class="op">=</span> <span class="kw">await</span> page.$<span class="fn">eval</span>(<span class="str">'a.link'</span>, el <span class="op">=></span> el.href);
+
+<span class="cmt">// Ambil banyak elemen sekaligus</span>
+<span class="kw">const</span> links <span class="op">=</span> <span class="kw">await</span> page.$$<span class="fn">eval</span>(<span class="str">'a'</span>, els <span class="op">=></span>
+  els.<span class="fn">map</span>(el <span class="op">=></span> ({ text: el.textContent, href: el.href }))
+);
+
+<span class="cmt">// Properti ElementHandle</span>
+<span class="kw">const</span> el <span class="op">=</span> <span class="kw">await</span> page.$(<span class="str">'input'</span>);
+<span class="kw">const</span> value <span class="op">=</span> <span class="kw">await</span> (<span class="kw">await</span> el.<span class="fn">getProperty</span>(<span class="str">'value'</span>)).<span class="fn">jsonValue</span>();
+
+<span class="cmt">// Bounding box elemen</span>
+<span class="kw">const</span> box <span class="op">=</span> <span class="kw">await</span> el.<span class="fn">boundingBox</span>();
+<span class="cmt">// { x: 10, y: 20, width: 100, height: 40 }</span></pre>
+    </div>
+  </div>
+
+  <!-- =============================== -->
+  <!-- 7. INPUT & INTERAKSI -->
+  <!-- =============================== -->
+  <div class="section" id="input">
+    <h2><span class="section-num">07</span> Input & Interaksi</h2>
+    <div class="section-divider"></div>
+
+    <h3>Klik dan Input Teks</h3>
+    <div class="code-block">
+      <div class="code-header"><span class="code-lang">javascript</span><button class="code-copy" onclick="copyCode(this)">copy</button></div>
+      <pre><span class="cmt">// Klik elemen</span>
+<span class="kw">await</span> page.<span class="fn">click</span>(<span class="str">'#submit'</span>);
+
+<span class="cmt">// Klik dengan opsi</span>
+<span class="kw">await</span> page.<span class="fn">click</span>(<span class="str">'#btn'</span>, {
+  button: <span class="str">'right'</span>,  <span class="cmt">// 'left' | 'right' | 'middle'</span>
+  clickCount: <span class="num">2</span>,    <span class="cmt">// double click</span>
+  delay: <span class="num">100</span>,       <span class="cmt">// delay antar mousedown & mouseup</span>
+});
+
+<span class="cmt">// Ketik teks (karakter per karakter)</span>
+<span class="kw">await</span> page.<span class="fn">type</span>(<span class="str">'#name'</span>, <span class="str">'John Doe'</span>, { delay: <span class="num">50</span> });
+
+<span class="cmt">// Set nilai langsung (lebih cepat)</span>
+<span class="kw">await</span> page.$<span class="fn">eval</span>(<span class="str">'#email'</span>, (el, val) <span class="op">=></span> el.value <span class="op">=</span> val, <span class="str">'user@example.com'</span>);
+
+<span class="cmt">// Clear dan isi ulang</span>
+<span class="kw">await</span> page.<span class="fn">click</span>(<span class="str">'#input'</span>, { clickCount: <span class="num">3</span> }); <span class="cmt">// Select all</span>
+<span class="kw">await</span> page.<span class="fn">type</span>(<span class="str">'#input'</span>, <span class="str">'new value'</span>);
+
+<span class="cmt">// Tekan keyboard</span>
+<span class="kw">await</span> page.<span class="fn">keyboard</span>.<span class="fn">press</span>(<span class="str">'Enter'</span>);
+<span class="kw">await</span> page.<span class="fn">keyboard</span>.<span class="fn">down</span>(<span class="str">'Control'</span>);
+<span class="kw">await</span> page.<span class="fn">keyboard</span>.<span class="fn">press</span>(<span class="str">'a'</span>); <span class="cmt">// Ctrl+A</span>
+<span class="kw">await</span> page.<span class="fn">keyboard</span>.<span class="fn">up</span>(<span class="str">'Control'</span>);</pre>
+    </div>
+
+    <h3>Form — Select, Checkbox, Upload</h3>
+    <div class="code-block">
+      <div class="code-header"><span class="code-lang">javascript</span><button class="code-copy" onclick="copyCode(this)">copy</button></div>
+      <pre><span class="cmt">// Pilih option dari &lt;select&gt;</span>
+<span class="kw">await</span> page.<span class="fn">select</span>(<span class="str">'select#country'</span>, <span class="str">'ID'</span>); <span class="cmt">// value 'ID'</span>
+<span class="kw">await</span> page.<span class="fn">select</span>(<span class="str">'select#multi'</span>, <span class="str">'opt1'</span>, <span class="str">'opt2'</span>); <span class="cmt">// multi-select</span>
+
+<span class="cmt">// Centang checkbox</span>
+<span class="kw">const</span> checkbox <span class="op">=</span> <span class="kw">await</span> page.$(<span class="str">'input[type="checkbox"]'</span>);
+<span class="kw">const</span> checked <span class="op">=</span> <span class="kw">await</span> (<span class="kw">await</span> checkbox.<span class="fn">getProperty</span>(<span class="str">'checked'</span>)).<span class="fn">jsonValue</span>();
+<span class="kw">if</span> (!checked) <span class="kw">await</span> checkbox.<span class="fn">click</span>();
+
+<span class="cmt">// Upload file</span>
+<span class="kw">const</span> input <span class="op">=</span> <span class="kw">await</span> page.$(<span class="str">'input[type="file"]'</span>);
+<span class="kw">await</span> input.<span class="fn">uploadFile</span>(<span class="str">'/path/to/file.pdf'</span>);
+
+<span class="cmt">// Hover</span>
+<span class="kw">await</span> page.<span class="fn">hover</span>(<span class="str">'.dropdown-trigger'</span>);
+
+<span class="cmt">// Scroll ke elemen</span>
+<span class="kw">await</span> page.$<span class="fn">eval</span>(<span class="str">'#footer'</span>, el <span class="op">=></span> el.<span class="fn">scrollIntoView</span>());</pre>
+    </div>
+
+    <h3>Mouse Kustom</h3>
+    <div class="code-block">
+      <div class="code-header"><span class="code-lang">javascript</span><button class="code-copy" onclick="copyCode(this)">copy</button></div>
+      <pre><span class="cmt">// Gerakkan mouse ke koordinat</span>
+<span class="kw">await</span> page.mouse.<span class="fn">move</span>(<span class="num">100</span>, <span class="num">200</span>);
+
+<span class="cmt">// Klik di koordinat tertentu</span>
+<span class="kw">await</span> page.mouse.<span class="fn">click</span>(<span class="num">500</span>, <span class="num">300</span>);
+
+<span class="cmt">// Drag and drop</span>
+<span class="kw">await</span> page.mouse.<span class="fn">move</span>(<span class="num">100</span>, <span class="num">100</span>);
+<span class="kw">await</span> page.mouse.<span class="fn">down</span>();
+<span class="kw">await</span> page.mouse.<span class="fn">move</span>(<span class="num">300</span>, <span class="num">100</span>, { steps: <span class="num">10</span> });
+<span class="kw">await</span> page.mouse.<span class="fn">up</span>();
+
+<span class="cmt">// Scroll halaman</span>
+<span class="kw">await</span> page.mouse.<span class="fn">wheel</span>({ deltaY: <span class="num">500</span> }); <span class="cmt">// scroll ke bawah</span></pre>
+    </div>
+  </div>
+
+  <!-- =============================== -->
+  <!-- 8. SCREENSHOT & PDF -->
+  <!-- =============================== -->
+  <div class="section" id="screenshot">
+    <h2><span class="section-num">08</span> Screenshot & PDF</h2>
+    <div class="section-divider"></div>
+
+    <h3>Screenshot Halaman</h3>
+    <div class="code-block">
+      <div class="code-header"><span class="code-lang">javascript</span><button class="code-copy" onclick="copyCode(this)">copy</button></div>
+      <pre><span class="cmt">// Screenshot dasar</span>
+<span class="kw">await</span> page.<span class="fn">screenshot</span>({ path: <span class="str">'page.png'</span> });
+
+<span class="cmt">// Screenshot halaman penuh</span>
+<span class="kw">await</span> page.<span class="fn">screenshot</span>({
+  path: <span class="str">'full.png'</span>,
+  fullPage: <span class="bool">true</span>,
+});
+
+<span class="cmt">// Screenshot area tertentu (clip)</span>
+<span class="kw">await</span> page.<span class="fn">screenshot</span>({
+  path: <span class="str">'clip.png'</span>,
+  clip: { x: <span class="num">0</span>, y: <span class="num">0</span>, width: <span class="num">800</span>, height: <span class="num">400</span> },
+});
+
+<span class="cmt">// Simpan sebagai JPEG dengan kualitas</span>
+<span class="kw">await</span> page.<span class="fn">screenshot</span>({
+  path: <span class="str">'output.jpg'</span>,
+  type: <span class="str">'jpeg'</span>,
+  quality: <span class="num">85</span>,
+});
+
+<span class="cmt">// Screenshot sebagai Buffer (tanpa simpan ke disk)</span>
+<span class="kw">const</span> buffer <span class="op">=</span> <span class="kw">await</span> page.<span class="fn">screenshot</span>({ encoding: <span class="str">'binary'</span> });
+
+<span class="cmt">// Screenshot satu elemen saja</span>
+<span class="kw">const</span> el <span class="op">=</span> <span class="kw">await</span> page.$(<span class="str">'.card'</span>);
+<span class="kw">await</span> el.<span class="fn">screenshot</span>({ path: <span class="str">'card.png'</span> });</pre>
+    </div>
+
+    <h3>Generate PDF</h3>
+    <div class="code-block">
+      <div class="code-header"><span class="code-lang">javascript</span><button class="code-copy" onclick="copyCode(this)">copy</button></div>
+      <pre><span class="cmt">// PDF dasar (hanya bekerja di headless mode)</span>
+<span class="kw">await</span> page.<span class="fn">pdf</span>({ path: <span class="str">'output.pdf'</span>, format: <span class="str">'A4'</span> });
+
+<span class="cmt">// PDF dengan pengaturan lengkap</span>
+<span class="kw">await</span> page.<span class="fn">pdf</span>({
+  path: <span class="str">'report.pdf'</span>,
+  format: <span class="str">'A4'</span>,            <span class="cmt">// 'Letter' | 'Legal' | 'A4' | dll</span>
+  landscape: <span class="bool">false</span>,
+  printBackground: <span class="bool">true</span>,   <span class="cmt">// Sertakan background CSS</span>
+  margin: {
+    top: <span class="str">'20mm'</span>,
+    right: <span class="str">'15mm'</span>,
+    bottom: <span class="str">'20mm'</span>,
+    left: <span class="str">'15mm'</span>,
+  },
+  displayHeaderFooter: <span class="bool">true</span>,
+  headerTemplate: <span class="str">`&lt;div style="font-size:10px;width:100%;text-align:center"&gt;
+    &lt;span class="title"&gt;&lt;/span&gt;
+  &lt;/div&gt;`</span>,
+  footerTemplate: <span class="str">`&lt;div style="font-size:10px;width:100%;text-align:center"&gt;
+    Halaman &lt;span class="pageNumber"&gt;&lt;/span&gt; dari &lt;span class="totalPages"&gt;&lt;/span&gt;
+  &lt;/div&gt;`</span>,
+  scale: <span class="num">0.9</span>,               <span class="cmt">// Skala (0.1 - 2)</span>
+  tagged: <span class="bool">true</span>,             <span class="cmt">// Tagged PDF untuk aksesibilitas</span>
+});</pre>
+    </div>
+
+    <div class="callout warn">
+      <strong>⚠️ Perhatian PDF</strong>
+      <p><code>page.pdf()</code> hanya berfungsi saat browser berjalan dalam mode headless. Pastikan menggunakan <code>emulateMediaType('print')</code> untuk hasil yang sesuai stylesheet print.</p>
+    </div>
+  </div>
+
+  <!-- =============================== -->
+  <!-- 9. NETWORK & REQUEST -->
+  <!-- =============================== -->
+  <div class="section" id="network">
+    <h2><span class="section-num">09</span> Network & Request</h2>
+    <div class="section-divider"></div>
+
+    <h3>Intersep Request</h3>
+    <div class="code-block">
+      <div class="code-header"><span class="code-lang">javascript</span><button class="code-copy" onclick="copyCode(this)">copy</button></div>
+      <pre><span class="cmt">// Aktifkan request interception</span>
+<span class="kw">await</span> page.<span class="fn">setRequestInterception</span>(<span class="bool">true</span>);
+
+page.<span class="fn">on</span>(<span class="str">'request'</span>, (req) <span class="op">=></span> {
+  <span class="cmt">// Blokir gambar dan font untuk hemat bandwidth</span>
+  <span class="kw">if</span> ([<span class="str">'image'</span>, <span class="str">'font'</span>].<span class="fn">includes</span>(req.<span class="fn">resourceType</span>())) {
+    req.<span class="fn">abort</span>();
+  } <span class="kw">else</span> {
+    req.<span class="fn">continue</span>();
+  }
+});
+
+<span class="cmt">// Modifikasi header request</span>
+page.<span class="fn">on</span>(<span class="str">'request'</span>, (req) <span class="op">=></span> {
+  req.<span class="fn">continue</span>({
+    headers: {
+      ...req.<span class="fn">headers</span>(),
+      <span class="str">'Authorization'</span>: <span class="str">'Bearer TOKEN123'</span>,
+    },
+  });
+});
+
+<span class="cmt">// Mock response API</span>
+page.<span class="fn">on</span>(<span class="str">'request'</span>, (req) <span class="op">=></span> {
+  <span class="kw">if</span> (req.<span class="fn">url</span>().<span class="fn">includes</span>(<span class="str">'/api/user'</span>)) {
+    req.<span class="fn">respond</span>({
+      status: <span class="num">200</span>,
+      contentType: <span class="str">'application/json'</span>,
+      body: <span class="cls">JSON</span>.<span class="fn">stringify</span>({ name: <span class="str">'John'</span>, id: <span class="num">1</span> }),
+    });
+  } <span class="kw">else</span> {
+    req.<span class="fn">continue</span>();
+  }
+});</pre>
+    </div>
+
+    <h3>Pantau Response</h3>
+    <div class="code-block">
+      <div class="code-header"><span class="code-lang">javascript</span><button class="code-copy" onclick="copyCode(this)">copy</button></div>
+      <pre><span class="cmt">// Tangkap response</span>
+page.<span class="fn">on</span>(<span class="str">'response'</span>, <span class="kw">async</span> (res) <span class="op">=></span> {
+  <span class="kw">if</span> (res.<span class="fn">url</span>().<span class="fn">includes</span>(<span class="str">'/api/'</span>)) {
+    <span class="kw">try</span> {
+      <span class="kw">const</span> data <span class="op">=</span> <span class="kw">await</span> res.<span class="fn">json</span>();
+      console.<span class="fn">log</span>(<span class="str">'API Response:'</span>, data);
+    } <span class="kw">catch</span> (e) {}
+  }
+});
+
+<span class="cmt">// Tunggu response spesifik</span>
+<span class="kw">const</span> [response] <span class="op">=</span> <span class="kw">await</span> <span class="cls">Promise</span>.<span class="fn">all</span>([
+  page.<span class="fn">waitForResponse</span>(res <span class="op">=></span>
+    res.<span class="fn">url</span>().<span class="fn">includes</span>(<span class="str">'/api/data'</span>) <span class="op">&&</span> res.<span class="fn">status</span>() <span class="op">===</span> <span class="num">200</span>
+  ),
+  page.<span class="fn">click</span>(<span class="str">'#load-btn'</span>),
+]);
+<span class="kw">const</span> json <span class="op">=</span> <span class="kw">await</span> response.<span class="fn">json</span>();
+
+<span class="cmt">// Pantau request gagal</span>
+page.<span class="fn">on</span>(<span class="str">'requestfailed'</span>, req <span class="op">=></span> {
+  console.<span class="fn">log</span>(<span class="str">`GAGAL: ${req.url()} — ${req.failure()?.errorText}`</span>);
+});</pre>
+    </div>
+
+    <h3>Set Header & Cookie Global</h3>
+    <div class="code-block">
+      <div class="code-header"><span class="code-lang">javascript</span><button class="code-copy" onclick="copyCode(this)">copy</button></div>
+      <pre><span class="cmt">// Set extra HTTP headers</span>
+<span class="kw">await</span> page.<span class="fn">setExtraHTTPHeaders</span>({
+  <span class="str">'Accept-Language'</span>: <span class="str">'id-ID,id;q=0.9'</span>,
+  <span class="str">'X-Custom-Header'</span>: <span class="str">'puppeteer'</span>,
+});</pre>
+    </div>
+  </div>
+
+  <!-- =============================== -->
+  <!-- 10. EVALUATE & SCRIPT -->
+  <!-- =============================== -->
+  <div class="section" id="evaluate">
+    <h2><span class="section-num">10</span> Evaluate & Script</h2>
+    <div class="section-divider"></div>
+
+    <h3>Jalankan JavaScript di Browser</h3>
+    <div class="code-block">
+      <div class="code-header"><span class="code-lang">javascript</span><button class="code-copy" onclick="copyCode(this)">copy</button></div>
+      <pre><span class="cmt">// Jalankan script dan kembalikan hasilnya</span>
+<span class="kw">const</span> title <span class="op">=</span> <span class="kw">await</span> page.<span class="fn">evaluate</span>(() <span class="op">=></span> document.title);
+
+<span class="cmt">// Pass argumen ke dalam browser context</span>
+<span class="kw">const</span> result <span class="op">=</span> <span class="kw">await</span> page.<span class="fn">evaluate</span>((x, y) <span class="op">=></span> x <span class="op">+</span> y, <span class="num">10</span>, <span class="num">20</span>);
+
+<span class="cmt">// Jalankan script dari file</span>
+<span class="kw">await</span> page.<span class="fn">addScriptTag</span>({ path: <span class="str">'./utils.js'</span> });
+<span class="kw">await</span> page.<span class="fn">addScriptTag</span>({ url: <span class="str">'https://cdn.jsdelivr.net/npm/lodash'</span> });
+
+<span class="cmt">// Inject CSS</span>
+<span class="kw">await</span> page.<span class="fn">addStyleTag</span>({ content: <span class="str">'body { zoom: 150% }'</span> });
+
+<span class="cmt">// Expose fungsi Node.js ke browser</span>
+<span class="kw">await</span> page.<span class="fn">exposeFunction</span>(<span class="str">'readFile'</span>, <span class="kw">async</span> (path) <span class="op">=></span> {
+  <span class="kw">return</span> fs.<span class="fn">readFileSync</span>(path, <span class="str">'utf8'</span>);
+});
+
+<span class="cmt">// Panggil fungsi yang sudah di-expose di dalam browser</span>
+<span class="kw">await</span> page.<span class="fn">evaluate</span>(<span class="kw">async</span> () <span class="op">=></span> {
+  <span class="kw">const</span> content <span class="op">=</span> <span class="kw">await</span> <span class="fn">readFile</span>(<span class="str">'/etc/hostname'</span>);
+  console.<span class="fn">log</span>(content);
+});</pre>
+    </div>
+
+    <h3>Tangkap Console & Dialog</h3>
+    <div class="code-block">
+      <div class="code-header"><span class="code-lang">javascript</span><button class="code-copy" onclick="copyCode(this)">copy</button></div>
+      <pre><span class="cmt">// Pantau console.log dari browser</span>
+page.<span class="fn">on</span>(<span class="str">'console'</span>, msg <span class="op">=></span> {
+  console.<span class="fn">log</span>(<span class="str">`[Browser ${msg.type()}]:`</span>, msg.<span class="fn">text</span>());
+});
+
+<span class="cmt">// Handle alert/confirm/prompt</span>
+page.<span class="fn">on</span>(<span class="str">'dialog'</span>, <span class="kw">async</span> dialog <span class="op">=></span> {
+  console.<span class="fn">log</span>(dialog.<span class="fn">message</span>());
+  <span class="kw">if</span> (dialog.<span class="fn">type</span>() <span class="op">===</span> <span class="str">'confirm'</span>) {
+    <span class="kw">await</span> dialog.<span class="fn">accept</span>();
+  } <span class="kw">else</span> {
+    <span class="kw">await</span> dialog.<span class="fn">dismiss</span>();
+  }
+});
+
+<span class="cmt">// Handle page error</span>
+page.<span class="fn">on</span>(<span class="str">'pageerror'</span>, err <span class="op">=></span> console.<span class="fn">error</span>(<span class="str">'JS Error:'</span>, err));</pre>
+    </div>
+  </div>
+
+  <!-- =============================== -->
+  <!-- 11. WAITING STRATEGIES -->
+  <!-- =============================== -->
+  <div class="section" id="wait">
+    <h2><span class="section-num">11</span> Waiting Strategies</h2>
+    <div class="section-divider"></div>
+    <p>Salah satu kunci sukses scraping adalah strategi menunggu yang tepat. Hindari <code>setTimeout</code> — gunakan metode berikut.</p>
+
+    <div class="code-block">
+      <div class="code-header"><span class="code-lang">javascript</span><button class="code-copy" onclick="copyCode(this)">copy</button></div>
+      <pre><span class="cmt">// Tunggu selector muncul di DOM</span>
+<span class="kw">await</span> page.<span class="fn">waitForSelector</span>(<span class="str">'.result'</span>);
+
+<span class="cmt">// Tunggu dengan opsi</span>
+<span class="kw">await</span> page.<span class="fn">waitForSelector</span>(<span class="str">'#content'</span>, {
+  visible: <span class="bool">true</span>,     <span class="cmt">// Elemen harus terlihat</span>
+  hidden: <span class="bool">false</span>,      <span class="cmt">// Tunggu hingga disembunyikan</span>
+  timeout: <span class="num">5000</span>,      <span class="cmt">// Timeout (ms)</span>
+});
+
+<span class="cmt">// Tunggu navigasi selesai</span>
+<span class="kw">await</span> page.<span class="fn">waitForNavigation</span>({ waitUntil: <span class="str">'networkidle2'</span> });
+
+<span class="cmt">// Tunggu dan klik sekaligus (race condition safe)</span>
+<span class="kw">const</span> [response] <span class="op">=</span> <span class="kw">await</span> <span class="cls">Promise</span>.<span class="fn">all</span>([
+  page.<span class="fn">waitForNavigation</span>(),
+  page.<span class="fn">click</span>(<span class="str">'a.nav-link'</span>),
+]);
+
+<span class="cmt">// Tunggu kondisi fungsi bernilai truthy</span>
+<span class="kw">await</span> page.<span class="fn">waitForFunction</span>(() <span class="op">=></span>
+  document.<span class="fn">querySelector</span>(<span class="str">'#loading'</span>)?.style.display <span class="op">===</span> <span class="str">'none'</span>
+);
+
+<span class="cmt">// Tunggu waktu (gunakan seminimal mungkin)</span>
+<span class="kw">await</span> page.<span class="fn">waitForTimeout</span>(<span class="num">1000</span>); <span class="cmt">// deprecated, gunakan setTimeout</span>
+<span class="kw">await</span> <span class="kw">new</span> <span class="cls">Promise</span>(r <span class="op">=></span> <span class="fn">setTimeout</span>(r, <span class="num">1000</span>));
+
+<span class="cmt">// Tunggu request jaringan spesifik</span>
+<span class="kw">await</span> page.<span class="fn">waitForRequest</span>(<span class="str">'https://api.example.com/data'</span>);
+<span class="kw">await</span> page.<span class="fn">waitForResponse</span>(res <span class="op">=></span> res.<span class="fn">url</span>().<span class="fn">includes</span>(<span class="str">'/api/'</span>));</pre>
+    </div>
+
+    <div class="callout tip">
+      <strong>💡 Tips: Pola Aman untuk SPA</strong>
+      <p>Untuk Single Page Application (React/Vue/Angular), gunakan <code>waitForSelector</code> + <code>networkidle2</code> bersama-sama untuk memastikan data sudah di-render.</p>
+    </div>
+  </div>
+
+  <!-- =============================== -->
+  <!-- 12. FRAMES & IFRAME -->
+  <!-- =============================== -->
+  <div class="section" id="frames">
+    <h2><span class="section-num">12</span> Frames & iFrame</h2>
+    <div class="section-divider"></div>
+
+    <div class="code-block">
+      <div class="code-header"><span class="code-lang">javascript</span><button class="code-copy" onclick="copyCode(this)">copy</button></div>
+      <pre><span class="cmt">// Dapatkan semua frame pada halaman</span>
+<span class="kw">const</span> frames <span class="op">=</span> page.<span class="fn">frames</span>();
+
+<span class="cmt">// Cari frame berdasarkan nama</span>
+<span class="kw">const</span> frame <span class="op">=</span> page.<span class="fn">frames</span>().<span class="fn">find</span>(f <span class="op">=></span> f.<span class="fn">name</span>() <span class="op">===</span> <span class="str">'my-iframe'</span>);
+
+<span class="cmt">// Cari frame berdasarkan URL</span>
+<span class="kw">const</span> frame <span class="op">=</span> page.<span class="fn">frames</span>().<span class="fn">find</span>(f <span class="op">=></span> f.<span class="fn">url</span>().<span class="fn">includes</span>(<span class="str">'embed.example.com'</span>));
+
+<span class="cmt">// Interact dengan elemen di dalam frame</span>
+<span class="kw">await</span> frame.<span class="fn">click</span>(<span class="str">'button#accept'</span>);
+<span class="kw">await</span> frame.<span class="fn">type</span>(<span class="str">'input'</span>, <span class="str">'hello'</span>);
+<span class="kw">const</span> text <span class="op">=</span> <span class="kw">await</span> frame.$<span class="fn">eval</span>(<span class="str">'h1'</span>, el <span class="op">=></span> el.textContent);
+
+<span class="cmt">// Dapatkan ElementHandle untuk iframe, lalu masuk ke content frame</span>
+<span class="kw">const</span> iframeEl <span class="op">=</span> <span class="kw">await</span> page.$(<span class="str">'iframe#captcha'</span>);
+<span class="kw">const</span> captchaFrame <span class="op">=</span> <span class="kw">await</span> iframeEl.<span class="fn">contentFrame</span>();
+<span class="kw">await</span> captchaFrame.<span class="fn">click</span>(<span class="str">'.recaptcha-checkbox'</span>);</pre>
+    </div>
+  </div>
+
+  <!-- =============================== -->
+  <!-- 13. COOKIES & STORAGE -->
+  <!-- =============================== -->
+  <div class="section" id="cookies">
+    <h2><span class="section-num">13</span> Cookies & Storage</h2>
+    <div class="section-divider"></div>
+
+    <div class="code-block">
+      <div class="code-header"><span class="code-lang">javascript</span><button class="code-copy" onclick="copyCode(this)">copy</button></div>
+      <pre><span class="cmt">// Baca cookies</span>
+<span class="kw">const</span> cookies <span class="op">=</span> <span class="kw">await</span> page.<span class="fn">cookies</span>();
+<span class="kw">const</span> sessionCookie <span class="op">=</span> cookies.<span class="fn">find</span>(c <span class="op">=></span> c.name <span class="op">===</span> <span class="str">'session'</span>);
+
+<span class="cmt">// Set cookies</span>
+<span class="kw">await</span> page.<span class="fn">setCookie</span>({
+  name: <span class="str">'auth_token'</span>,
+  value: <span class="str">'abc123xyz'</span>,
+  domain: <span class="str">'example.com'</span>,
+  path: <span class="str">'/'</span>,
+  httpOnly: <span class="bool">true</span>,
+  secure: <span class="bool">true</span>,
+});
+
+<span class="cmt">// Simpan cookies ke file (untuk reuse session)</span>
+<span class="kw">const</span> fs <span class="op">=</span> <span class="fn">require</span>(<span class="str">'fs'</span>);
+fs.<span class="fn">writeFileSync</span>(<span class="str">'cookies.json'</span>, <span class="cls">JSON</span>.<span class="fn">stringify</span>(cookies));
+
+<span class="cmt">// Load cookies dari file</span>
+<span class="kw">const</span> savedCookies <span class="op">=</span> <span class="cls">JSON</span>.<span class="fn">parse</span>(fs.<span class="fn">readFileSync</span>(<span class="str">'cookies.json'</span>));
+<span class="kw">await</span> page.<span class="fn">setCookie</span>(...savedCookies);
+
+<span class="cmt">// Hapus cookies</span>
+<span class="kw">await</span> page.<span class="fn">deleteCookie</span>({ name: <span class="str">'auth_token'</span> });
+
+<span class="cmt">// Akses localStorage & sessionStorage</span>
+<span class="kw">await</span> page.<span class="fn">evaluate</span>(() <span class="op">=></span> {
+  localStorage.<span class="fn">setItem</span>(<span class="str">'token'</span>, <span class="str">'secret'</span>);
+  <span class="kw">return</span> localStorage.<span class="fn">getItem</span>(<span class="str">'user'</span>);
+});</pre>
+    </div>
+  </div>
+
+  <!-- =============================== -->
+  <!-- 14. AUTENTIKASI -->
+  <!-- =============================== -->
+  <div class="section" id="auth">
+    <h2><span class="section-num">14</span> Autentikasi</h2>
+    <div class="section-divider"></div>
+
+    <h3>HTTP Authentication (Basic Auth)</h3>
+    <div class="code-block">
+      <div class="code-header"><span class="code-lang">javascript</span><button class="code-copy" onclick="copyCode(this)">copy</button></div>
+      <pre><span class="cmt">// Basic auth via header</span>
+<span class="kw">await</span> page.<span class="fn">authenticate</span>({
+  username: <span class="str">'admin'</span>,
+  password: <span class="str">'password123'</span>,
+});</pre>
+    </div>
+
+    <h3>Login Form (Session-based)</h3>
+    <div class="code-block">
+      <div class="code-header"><span class="code-lang">javascript</span><button class="code-copy" onclick="copyCode(this)">copy</button></div>
+      <pre><span class="kw">async function</span> <span class="fn">login</span>(page, username, password) {
+  <span class="kw">await</span> page.<span class="fn">goto</span>(<span class="str">'https://app.example.com/login'</span>);
+
+  <span class="kw">await</span> page.<span class="fn">type</span>(<span class="str">'#username'</span>, username);
+  <span class="kw">await</span> page.<span class="fn">type</span>(<span class="str">'#password'</span>, password);
+
+  <span class="kw">await</span> <span class="cls">Promise</span>.<span class="fn">all</span>([
+    page.<span class="fn">waitForNavigation</span>(),
+    page.<span class="fn">click</span>(<span class="str">'button[type="submit"]'</span>),
+  ]);
+
+  <span class="cmt">// Simpan session cookies</span>
+  <span class="kw">const</span> cookies <span class="op">=</span> <span class="kw">await</span> page.<span class="fn">cookies</span>();
+  fs.<span class="fn">writeFileSync</span>(<span class="str">'session.json'</span>, <span class="cls">JSON</span>.<span class="fn">stringify</span>(cookies));
+  console.<span class="fn">log</span>(<span class="str">'Login berhasil!'</span>);
+}</pre>
+    </div>
+
+    <h3>Reuse Session Tanpa Login Ulang</h3>
+    <div class="code-block">
+      <div class="code-header"><span class="code-lang">javascript</span><button class="code-copy" onclick="copyCode(this)">copy</button></div>
+      <pre><span class="kw">const</span> browser <span class="op">=</span> <span class="kw">await</span> puppeteer.<span class="fn">launch</span>({
+  userDataDir: <span class="str">'./chrome-profile'</span>, <span class="cmt">// Simpan profil & cookies Chrome</span>
+});
+
+<span class="cmt">// Atau load cookies manual</span>
+<span class="kw">const</span> page <span class="op">=</span> <span class="kw">await</span> browser.<span class="fn">newPage</span>();
+<span class="kw">const</span> cookies <span class="op">=</span> <span class="cls">JSON</span>.<span class="fn">parse</span>(fs.<span class="fn">readFileSync</span>(<span class="str">'session.json'</span>));
+<span class="kw">await</span> page.<span class="fn">setCookie</span>(...cookies);</pre>
+    </div>
+  </div>
+
+  <!-- =============================== -->
+  <!-- 15. HEADLESS MODE -->
+  <!-- =============================== -->
+  <div class="section" id="headless">
+    <h2><span class="section-num">15</span> Headless Mode</h2>
+    <div class="section-divider"></div>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Mode</th><th>Kode</th><th>Keterangan</th></tr></thead>
+        <tbody>
+          <tr><td>headless: 'new'</td><td><code>headless: 'new'</code></td><td>Headless baru (default Puppeteer v21+)</td></tr>
+          <tr><td>headless: true</td><td><code>headless: true</code></td><td>Headless lama (Chrome Headless Legacy)</td></tr>
+          <tr><td>headless: false</td><td><code>headless: false</code></td><td>Mode visible — tampilkan jendela browser</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout info">
+      <strong>ℹ️ Headless Baru vs Lama</strong>
+      <p>Mode <code>'new'</code> menggunakan arsitektur headless Chrome terbaru yang lebih stabil dan akurat secara visual. Mode <code>true</code> (legacy) akan dihapus di versi Chrome mendatang.</p>
+    </div>
+  </div>
+
+  <!-- =============================== -->
+  <!-- 16. PERFORMANCE -->
+  <!-- =============================== -->
+  <div class="section" id="performance">
+    <h2><span class="section-num">16</span> Performance</h2>
+    <div class="section-divider"></div>
+
+    <h3>Optimasi Kecepatan</h3>
+    <div class="code-block">
+      <div class="code-header"><span class="code-lang">javascript</span><button class="code-copy" onclick="copyCode(this)">copy</button></div>
+      <pre><span class="cmt">// 1. Blokir resource yang tidak perlu</span>
+<span class="kw">await</span> page.<span class="fn">setRequestInterception</span>(<span class="bool">true</span>);
+page.<span class="fn">on</span>(<span class="str">'request'</span>, req <span class="op">=></span> {
+  <span class="kw">const</span> blocked <span class="op">=</span> [<span class="str">'image'</span>, <span class="str">'stylesheet'</span>, <span class="str">'font'</span>, <span class="str">'media'</span>];
+  <span class="kw">if</span> (blocked.<span class="fn">includes</span>(req.<span class="fn">resourceType</span>())) {
+    req.<span class="fn">abort</span>();
+  } <span class="kw">else</span> {
+    req.<span class="fn">continue</span>();
+  }
+});
+
+<span class="cmt">// 2. Nonaktifkan JavaScript jika tidak diperlukan</span>
+<span class="kw">await</span> page.<span class="fn">setJavaScriptEnabled</span>(<span class="bool">false</span>);
+
+<span class="cmt">// 3. Set cache</span>
+<span class="kw">await</span> page.<span class="fn">setCacheEnabled</span>(<span class="bool">true</span>);
+
+<span class="cmt">// 4. Reuse browser instance (jangan buat baru setiap request)</span>
+<span class="kw">let</span> browser;
+<span class="kw">async function</span> <span class="fn">getBrowser</span>() {
+  <span class="kw">if</span> (!browser || !browser.<span class="fn">isConnected</span>()) {
+    browser <span class="op">=</span> <span class="kw">await</span> puppeteer.<span class="fn">launch</span>();
+  }
+  <span class="kw">return</span> browser;
+}
+
+<span class="cmt">// 5. Matikan animasi untuk scraping lebih stabil</span>
+<span class="kw">await</span> page.<span class="fn">addStyleTag</span>({
+  content: <span class="str">'*, *::before, *::after { animation-duration: 0s !important; transition-duration: 0s !important; }'</span>
+});</pre>
+    </div>
+  </div>
+
+  <!-- =============================== -->
+  <!-- 17. CONCURRENCY -->
+  <!-- =============================== -->
+  <div class="section" id="concurrency">
+    <h2><span class="section-num">17</span> Concurrency</h2>
+    <div class="section-divider"></div>
+
+    <h3>Scrape Banyak URL Paralel</h3>
+    <div class="code-block">
+      <div class="code-header"><span class="code-lang">javascript</span><button class="code-copy" onclick="copyCode(this)">copy</button></div>
+      <pre><span class="kw">const</span> puppeteer <span class="op">=</span> <span class="fn">require</span>(<span class="str">'puppeteer'</span>);
+
+<span class="kw">async function</span> <span class="fn">scrapeUrl</span>(browser, url) {
+  <span class="kw">const</span> page <span class="op">=</span> <span class="kw">await</span> browser.<span class="fn">newPage</span>();
+  <span class="kw">try</span> {
+    <span class="kw">await</span> page.<span class="fn">goto</span>(url, { waitUntil: <span class="str">'domcontentloaded'</span> });
+    <span class="kw">const</span> data <span class="op">=</span> <span class="kw">await</span> page.<span class="fn">evaluate</span>(() <span class="op">=></span> ({
+      title: document.title,
+      text: document.body?.innerText?.slice(<span class="num">0</span>, <span class="num">200</span>),
+    }));
+    <span class="kw">return</span> { url, ...data };
+  } <span class="kw">finally</span> {
+    <span class="kw">await</span> page.<span class="fn">close</span>(); <span class="cmt">// Selalu tutup page!</span>
+  }
+}
+
+<span class="kw">async function</span> <span class="fn">scrapeAll</span>(urls, concurrency <span class="op">=</span> <span class="num">5</span>) {
+  <span class="kw">const</span> browser <span class="op">=</span> <span class="kw">await</span> puppeteer.<span class="fn">launch</span>();
+  <span class="kw">const</span> results <span class="op">=</span> [];
+
+  <span class="cmt">// Proses batch untuk membatasi concurrency</span>
+  <span class="kw">for</span> (<span class="kw">let</span> i <span class="op">=</span> <span class="num">0</span>; i <span class="op"><</span> urls.length; i <span class="op">+=</span> concurrency) {
+    <span class="kw">const</span> batch <span class="op">=</span> urls.<span class="fn">slice</span>(i, i <span class="op">+</span> concurrency);
+    <span class="kw">const</span> batchResults <span class="op">=</span> <span class="kw">await</span> <span class="cls">Promise</span>.<span class="fn">all</span>(
+      batch.<span class="fn">map</span>(url <span class="op">=></span> <span class="fn">scrapeUrl</span>(browser, url))
+    );
+    results.<span class="fn">push</span>(...batchResults);
+  }
+
+  <span class="kw">await</span> browser.<span class="fn">close</span>();
+  <span class="kw">return</span> results;
+}
+
+<span class="cmt">// Contoh penggunaan</span>
+<span class="kw">const</span> urls <span class="op">=</span> [
+  <span class="str">'https://example.com/page/1'</span>,
+  <span class="str">'https://example.com/page/2'</span>,
+  <span class="str">'https://example.com/page/3'</span>,
+];
+
+<span class="fn">scrapeAll</span>(urls, <span class="num">3</span>).<span class="fn">then</span>(console.log);</pre>
+    </div>
+  </div>
+
+  <!-- =============================== -->
+  <!-- 18. API REFERENCE -->
+  <!-- =============================== -->
+  <div class="section" id="api">
+    <h2><span class="section-num">18</span> API Reference</h2>
+    <div class="section-divider"></div>
+
+    <h3>puppeteer</h3>
+    <div class="api-card">
+      <div class="api-card-header">
+        <span class="api-method async">async</span>
+        <span class="api-name">puppeteer.launch(options?)</span>
+        <span class="api-return">→ Browser</span>
+      </div>
+      <div class="api-card-body">Membuat instance browser baru dengan opsi konfigurasi yang diberikan.</div>
+    </div>
+    <div class="api-card">
+      <div class="api-card-header">
+        <span class="api-method async">async</span>
+        <span class="api-name">puppeteer.connect(options)</span>
+        <span class="api-return">→ Browser</span>
+      </div>
+      <div class="api-card-body">Koneksi ke browser yang sudah berjalan via WebSocket endpoint.</div>
+    </div>
+
+    <h3>Browser</h3>
+    <div class="api-card">
+      <div class="api-card-header">
+        <span class="api-method async">async</span>
+        <span class="api-name">browser.newPage()</span>
+        <span class="api-return">→ Page</span>
+      </div>
+      <div class="api-card-body">Membuka tab/halaman baru dalam browser.</div>
+    </div>
+    <div class="api-card">
+      <div class="api-card-header">
+        <span class="api-method async">async</span>
+        <span class="api-name">browser.pages()</span>
+        <span class="api-return">→ Page[]</span>
+      </div>
+      <div class="api-card-body">Mengembalikan array semua halaman yang terbuka.</div>
+    </div>
+    <div class="api-card">
+      <div class="api-card-header">
+        <span class="api-method async">async</span>
+        <span class="api-name">browser.close()</span>
+        <span class="api-return">→ void</span>
+      </div>
+      <div class="api-card-body">Menutup browser dan semua tab. Selalu panggil ini di akhir script.</div>
+    </div>
+
+    <h3>Page (metode utama)</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Metode</th><th>Return</th><th>Deskripsi</th></tr></thead>
+        <tbody>
+          <tr><td>page.goto(url, opts?)</td><td>Response</td><td>Navigasi ke URL</td></tr>
+          <tr><td>page.$(selector)</td><td>ElementHandle</td><td>Cari satu elemen</td></tr>
+          <tr><td>page.$$(selector)</td><td>ElementHandle[]</td><td>Cari semua elemen</td></tr>
+          <tr><td>page.$eval(sel, fn)</td><td>any</td><td>Query + evaluate dalam satu panggilan</td></tr>
+          <tr><td>page.$$eval(sel, fn)</td><td>any[]</td><td>Query all + evaluate</td></tr>
+          <tr><td>page.evaluate(fn)</td><td>any</td><td>Jalankan fungsi di browser context</td></tr>
+          <tr><td>page.click(selector)</td><td>void</td><td>Klik elemen</td></tr>
+          <tr><td>page.type(sel, text)</td><td>void</td><td>Ketik teks ke elemen</td></tr>
+          <tr><td>page.select(sel, ...vals)</td><td>string[]</td><td>Pilih option &lt;select&gt;</td></tr>
+          <tr><td>page.screenshot(opts?)</td><td>Buffer</td><td>Ambil screenshot</td></tr>
+          <tr><td>page.pdf(opts?)</td><td>Buffer</td><td>Generate PDF</td></tr>
+          <tr><td>page.waitForSelector(sel)</td><td>ElementHandle</td><td>Tunggu elemen muncul</td></tr>
+          <tr><td>page.waitForNavigation()</td><td>Response</td><td>Tunggu navigasi selesai</td></tr>
+          <tr><td>page.waitForFunction(fn)</td><td>JSHandle</td><td>Tunggu kondisi terpenuhi</td></tr>
+          <tr><td>page.cookies()</td><td>Cookie[]</td><td>Baca cookies</td></tr>
+          <tr><td>page.setCookie(...cookies)</td><td>void</td><td>Set cookies</td></tr>
+          <tr><td>page.setViewport(opts)</td><td>void</td><td>Set ukuran viewport</td></tr>
+          <tr><td>page.setUserAgent(ua)</td><td>void</td><td>Set user agent</td></tr>
+          <tr><td>page.title()</td><td>string</td><td>Judul halaman</td></tr>
+          <tr><td>page.url()</td><td>string</td><td>URL saat ini</td></tr>
+          <tr><td>page.content()</td><td>string</td><td>HTML halaman lengkap</td></tr>
+          <tr><td>page.close()</td><td>void</td><td>Tutup halaman/tab</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- =============================== -->
+  <!-- 19. ERROR HANDLING -->
+  <!-- =============================== -->
+  <div class="section" id="errors">
+    <h2><span class="section-num">19</span> Error Handling</h2>
+    <div class="section-divider"></div>
+
+    <div class="code-block">
+      <div class="code-header"><span class="code-lang">javascript</span><button class="code-copy" onclick="copyCode(this)">copy</button></div>
+      <pre><span class="kw">const</span> puppeteer <span class="op">=</span> <span class="fn">require</span>(<span class="str">'puppeteer'</span>);
+<span class="kw">const</span> { TimeoutError } <span class="op">=</span> <span class="fn">require</span>(<span class="str">'puppeteer'</span>);
+
+<span class="kw">async function</span> <span class="fn">safeScrape</span>(url) {
+  <span class="kw">let</span> browser;
+  <span class="kw">try</span> {
+    browser <span class="op">=</span> <span class="kw">await</span> puppeteer.<span class="fn">launch</span>();
+    <span class="kw">const</span> page <span class="op">=</span> <span class="kw">await</span> browser.<span class="fn">newPage</span>();
+
+    <span class="cmt">// Set timeout global untuk semua operasi</span>
+    page.<span class="fn">setDefaultTimeout</span>(<span class="num">15000</span>);
+    page.<span class="fn">setDefaultNavigationTimeout</span>(<span class="num">30000</span>);
+
+    <span class="kw">await</span> page.<span class="fn">goto</span>(url);
+    <span class="kw">const</span> data <span class="op">=</span> <span class="kw">await</span> page.$<span class="fn">eval</span>(<span class="str">'h1'</span>, el <span class="op">=></span> el.textContent);
+    <span class="kw">return</span> data;
+
+  } <span class="kw">catch</span> (err) {
+    <span class="kw">if</span> (err <span class="kw">instanceof</span> TimeoutError) {
+      console.<span class="fn">error</span>(<span class="str">'Timeout! Halaman tidak merespons.'</span>);
+    } <span class="kw">else if</span> (err.message.<span class="fn">includes</span>(<span class="str">'net::ERR_'</span>)) {
+      console.<span class="fn">error</span>(<span class="str">'Network error:'</span>, err.message);
+    } <span class="kw">else</span> {
+      console.<span class="fn">error</span>(<span class="str">'Error tidak terduga:'</span>, err);
+    }
+    <span class="kw">return</span> <span class="bool">null</span>;
+
+  } <span class="kw">finally</span> {
+    <span class="cmt">// Browser SELALU ditutup, bahkan saat error</span>
+    <span class="kw">if</span> (browser) <span class="kw">await</span> browser.<span class="fn">close</span>();
+  }
+}</pre>
+    </div>
+
+    <h3>Error Umum dan Solusinya</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Error</th><th>Penyebab</th><th>Solusi</th></tr></thead>
+        <tbody>
+          <tr><td>TimeoutError</td><td>Elemen/navigasi tidak selesai dalam waktu</td><td>Tingkatkan timeout atau gunakan waitUntil yang tepat</td></tr>
+          <tr><td>net::ERR_CONNECTION_REFUSED</td><td>Server tidak dapat dijangkau</td><td>Periksa URL dan koneksi internet</td></tr>
+          <tr><td>Protocol error: Target closed</td><td>Page ditutup sebelum operasi selesai</td><td>Pastikan tidak ada race condition</td></tr>
+          <tr><td>Error: CHROME_PATH not found</td><td>Chromium tidak ditemukan</td><td>Jalankan <code>npx puppeteer browsers install chrome</code></td></tr>
+          <tr><td>Execution context was destroyed</td><td>Navigasi terjadi di tengah evaluate</td><td>Tunggu navigasi selesai sebelum evaluate</td></tr>
+          <tr><td>No node found for selector</td><td>Elemen tidak ada di DOM</td><td>Gunakan <code>waitForSelector</code> sebelum interaksi</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- =============================== -->
+  <!-- 20. TIPS & TRICKS -->
+  <!-- =============================== -->
+  <div class="section" id="tips">
+    <h2><span class="section-num">20</span> Tips & Tricks</h2>
+    <div class="section-divider"></div>
+
+    <h3>Anti-Detection (Bypass Bot Detection)</h3>
+    <div class="code-block">
+      <div class="code-header"><span class="code-lang">javascript</span><button class="code-copy" onclick="copyCode(this)">copy</button></div>
+      <pre><span class="cmt">// Sembunyikan tanda-tanda puppeteer</span>
+<span class="kw">await</span> page.<span class="fn">evaluateOnNewDocument</span>(() <span class="op">=></span> {
+  <span class="cmt">// Hapus webdriver flag</span>
+  <span class="cls">Object</span>.<span class="fn">defineProperty</span>(navigator, <span class="str">'webdriver'</span>, {
+    <span class="fn">get</span>: () <span class="op">=></span> <span class="bool">undefined</span>,
+  });
+
+  <span class="cmt">// Set bahasa</span>
+  <span class="cls">Object</span>.<span class="fn">defineProperty</span>(navigator, <span class="str">'language'</span>, {
+    <span class="fn">get</span>: () <span class="op">=></span> <span class="str">'id-ID'</span>,
+  });
+
+  <span class="cmt">// Mock plugins</span>
+  <span class="cls">Object</span>.<span class="fn">defineProperty</span>(navigator, <span class="str">'plugins'</span>, {
+    <span class="fn">get</span>: () <span class="op">=></span> [<span class="num">1</span>, <span class="num">2</span>, <span class="num">3</span>, <span class="num">4</span>, <span class="num">5</span>],
+  });
+});
+
+<span class="cmt">// Gunakan user-agent nyata</span>
+<span class="kw">await</span> page.<span class="fn">setUserAgent</span>(
+  <span class="str">'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36'</span>
+);</pre>
+    </div>
+
+    <h3>Scroll Infinite Loading</h3>
+    <div class="code-block">
+      <div class="code-header"><span class="code-lang">javascript</span><button class="code-copy" onclick="copyCode(this)">copy</button></div>
+      <pre><span class="kw">async function</span> <span class="fn">autoScroll</span>(page) {
+  <span class="kw">await</span> page.<span class="fn">evaluate</span>(<span class="kw">async</span> () <span class="op">=></span> {
+    <span class="kw">await new</span> <span class="cls">Promise</span>((resolve) <span class="op">=></span> {
+      <span class="kw">let</span> totalHeight <span class="op">=</span> <span class="num">0</span>;
+      <span class="kw">const</span> distance <span class="op">=</span> <span class="num">300</span>;
+      <span class="kw">const</span> timer <span class="op">=</span> <span class="fn">setInterval</span>(() <span class="op">=></span> {
+        window.<span class="fn">scrollBy</span>(<span class="num">0</span>, distance);
+        totalHeight <span class="op">+=</span> distance;
+        <span class="kw">if</span> (totalHeight <span class="op">>=</span> document.body.scrollHeight) {
+          <span class="fn">clearInterval</span>(timer);
+          <span class="fn">resolve</span>();
+        }
+      }, <span class="num">200</span>);
+    });
+  });
+}</pre>
+    </div>
+
+    <h3>Contoh Scraping Lengkap</h3>
+    <div class="code-block">
+      <div class="code-header"><span class="code-lang">javascript</span><button class="code-copy" onclick="copyCode(this)">copy</button></div>
+      <pre><span class="kw">const</span> puppeteer <span class="op">=</span> <span class="fn">require</span>(<span class="str">'puppeteer'</span>);
+<span class="kw">const</span> fs <span class="op">=</span> <span class="fn">require</span>(<span class="str">'fs'</span>);
+
+(<span class="kw">async</span> () <span class="op">=></span> {
+  <span class="kw">const</span> browser <span class="op">=</span> <span class="kw">await</span> puppeteer.<span class="fn">launch</span>({ headless: <span class="str">'new'</span> });
+  <span class="kw">const</span> page <span class="op">=</span> <span class="kw">await</span> browser.<span class="fn">newPage</span>();
+
+  <span class="cmt">// Konfigurasi</span>
+  <span class="kw">await</span> page.<span class="fn">setViewport</span>({ width: <span class="num">1280</span>, height: <span class="num">800</span> });
+  <span class="kw">await</span> page.<span class="fn">setUserAgent</span>(<span class="str">'Mozilla/5.0 ...'</span>);
+  page.<span class="fn">setDefaultTimeout</span>(<span class="num">20000</span>);
+
+  <span class="kw">const</span> allData <span class="op">=</span> [];
+  <span class="kw">let</span> page_num <span class="op">=</span> <span class="num">1</span>;
+
+  <span class="kw">while</span> (<span class="bool">true</span>) {
+    <span class="kw">await</span> page.<span class="fn">goto</span>(<span class="str">`https://example.com/products?page=${page_num}`</span>);
+
+    <span class="cmt">// Tunggu konten</span>
+    <span class="kw">await</span> page.<span class="fn">waitForSelector</span>(<span class="str">'.product-list'</span>);
+
+    <span class="cmt">// Ambil data</span>
+    <span class="kw">const</span> products <span class="op">=</span> <span class="kw">await</span> page.$$<span class="fn">eval</span>(<span class="str">'.product-card'</span>, cards <span class="op">=></span>
+      cards.<span class="fn">map</span>(card <span class="op">=></span> ({
+        name: card.<span class="fn">querySelector</span>(<span class="str">'.name'</span>)?.textContent?.trim(),
+        price: card.<span class="fn">querySelector</span>(<span class="str">'.price'</span>)?.textContent?.trim(),
+        url: card.<span class="fn">querySelector</span>(<span class="str">'a'</span>)?.href,
+      }))
+    );
+
+    <span class="kw">if</span> (products.length <span class="op">===</span> <span class="num">0</span>) <span class="kw">break</span>;
+    allData.<span class="fn">push</span>(...products);
+
+    <span class="cmt">// Cek tombol next</span>
+    <span class="kw">const</span> nextBtn <span class="op">=</span> <span class="kw">await</span> page.$(<span class="str">'.pagination-next:not(.disabled)'</span>);
+    <span class="kw">if</span> (!nextBtn) <span class="kw">break</span>;
+
+    page_num++;
+  }
+
+  <span class="cmt">// Simpan hasil</span>
+  fs.<span class="fn">writeFileSync</span>(<span class="str">'output.json'</span>, <span class="cls">JSON</span>.<span class="fn">stringify</span>(allData, <span class="bool">null</span>, <span class="num">2</span>));
+  console.<span class="fn">log</span>(<span class="str">`✅ Berhasil scrape ${allData.length} produk`</span>);
+
+  <span class="kw">await</span> browser.<span class="fn">close</span>();
+})();</pre>
+    </div>
+
+    <div class="callout tip">
+      <strong>💡 Best Practice</strong>
+      <p>Selalu gunakan blok <code>try/finally</code> untuk memastikan <code>browser.close()</code> selalu dipanggil. Gunakan <code>Promise.all()</code> saat menggabungkan aksi dengan <code>waitForNavigation</code>. Hindari <code>page.waitForTimeout()</code> — gunakan selector atau fungsi sebagai kondisi tunggu.</p>
+    </div>
+  </div>
+
+</main>
+
+<script>
+  function copyCode(btn) {
+    const pre = btn.closest('.code-block').querySelector('pre');
+    const text = pre.innerText;
+    navigator.clipboard.writeText(text).then(() => {
+      btn.textContent = 'copied!';
+      btn.style.color = '#22c55e';
+      setTimeout(() => { btn.textContent = 'copy'; btn.style.color = ''; }, 2000);
+    });
+  }
+
+  // Active nav tracking
+  const sections = document.querySelectorAll('.section');
+  const navItems = document.querySelectorAll('.nav-item');
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        navItems.forEach(item => item.classList.remove('active'));
+        const id = entry.target.id;
+        const active = document.querySelector(`.nav-item[href="#${id}"]`);
+        if (active) active.classList.add('active');
       }
     });
+  }, { threshold: 0.3, rootMargin: '-80px 0px -60% 0px' });
 
-    yesBtn.addEventListener('click', () => {
-      playMusic();
-      goToAnimation();
-    });
-
-    function playMusic() {
-      const audio = document.getElementById('bgMusic');
-      audio.play().catch(e => console.log("Autoplay blocked, waiting for interaction"));
-    }
-
-    function goToAnimation() {
-      document.body.style.transition = 'opacity 0.5s';
-      document.body.style.opacity = '0';
-      setTimeout(() => {
-        window.location.href = 'animasi.html';
-      }, 500);
-    }
-  </script>
+  sections.forEach(s => observer.observe(s));
+</script>
 </body>
 </html>
