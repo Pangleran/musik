@@ -1618,67 +1618,32 @@ page.<span class="fn">on</span>(<span class="str">'request'</span>, req <span cl
 
   sections.forEach(s => observer.observe(s));
 </script>
-<!-- BACKSOUND -->
-<audio id="backsound" loop>
-  <source src="./backsound.mp3" type="audio/mpeg">
-</audio>
 
-<!-- Tombol toggle musik -->
-<button id="music-toggle" onclick="toggleMusic()" title="Toggle Music">
-  🔇
-</button>
-
-<style>
-  #music-toggle {
-    position: fixed;
-    bottom: 24px;
-    right: 24px;
-    width: 44px;
-    height: 44px;
-    border-radius: 50%;
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    font-size: 18px;
-    cursor: pointer;
-    z-index: 999;
-    transition: all 0.2s;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  #music-toggle:hover {
-    border-color: var(--accent);
-    box-shadow: 0 0 12px rgba(0,229,255,0.2);
-  }
-</style>
-
+<!-- Background music (hidden) -->
+<iframe
+  id="yt-bg"
+  src=""
+  allow="autoplay; encrypted-media"
+  style="position:fixed;width:1px;height:1px;bottom:0;right:0;opacity:0;pointer-events:none;border:none;"
+  tabindex="-1"
+></iframe>
 <script>
-  const audio = document.getElementById('backsound');
-  const btn = document.getElementById('music-toggle');
-  let playing = false;
-
-  // Autoplay saat user pertama kali klik halaman
-  document.addEventListener('click', function startOnce() {
-    if (!playing) {
-      audio.volume = 0.4;
-      audio.play();
-      playing = true;
-      btn.textContent = '🔊';
+  (function () {
+    var played = false;
+    function startMusic() {
+      if (played) return;
+      played = true;
+      document.getElementById('yt-bg').src =
+        'https://www.youtube.com/embed/5QqOX06VLxQ?autoplay=1&loop=1&playlist=5QqOX06VLxQ&rel=0&mute=0';
+      document.removeEventListener('click', startMusic);
+      document.removeEventListener('keydown', startMusic);
+      document.removeEventListener('scroll', startMusic);
     }
-    document.removeEventListener('click', startOnce);
-  }, { once: true });
-
-  function toggleMusic() {
-    if (playing) {
-      audio.pause();
-      playing = false;
-      btn.textContent = '🔇';
-    } else {
-      audio.play();
-      playing = true;
-      btn.textContent = '🔊';
-    }
-  }
+    document.addEventListener('click', startMusic);
+    document.addEventListener('keydown', startMusic);
+    document.addEventListener('scroll', startMusic);
+  })();
 </script>
+
 </body>
 </html>
